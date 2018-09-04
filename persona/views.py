@@ -41,6 +41,9 @@ class PersonasCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView)
         if request.method == 'POST':
             form = PersonaForm(request.POST)
             if form.is_valid():
+                nombre = len(request.POST['nombre'])
+                if nombre <= 3:
+                    print ('Hay un error en el nombre')
                 form.save()
                 data['form_is_valid'] = True
             else:
