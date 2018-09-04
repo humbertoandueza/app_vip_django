@@ -44,12 +44,19 @@ $("#modal1").on("submit", ".js-book-create-form", function (e) {
     type: form.attr("method"),
     dataType: 'json',
     success: function (data) {
+        console.log(data);
         if (data.form_is_valid) {
             Materialize.toast('Miembro Registrado', 3000, 'rounded')
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
         else {
-        $("#modal1 .modal-content").html(data.html_form);
+            $("#modal1 .modal-content").html(data.html_form);
+            var error = data.error.split(',');
+            for(var i = 0;i < error.length; i+=1){
+                $('#error').append('<p style="color:red;">'+error[i]+'</p>');
+                console.log(error[i]);
+            }
+
         }
     }
     });
