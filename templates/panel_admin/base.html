@@ -152,7 +152,7 @@
                     </div>
                 </div>
                 </li>
-                <li class="bold {% if request.path == '/panel/' %}active{%endif%}"><a href="" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Inicio</a>
+                <li class="bold {% if request.path == '/panel/' %}active{%endif%}"><a href="{% url 'core:panel' %}" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Inicio</a>
                 </li>
                 <li class="no-padding">
                     <ul class="collapsible collapsible-accordion">
@@ -231,14 +231,20 @@
 
 
     <!-- //////////////////////////////////////////////////////////////////////////// -->
-
+    <style>
+    #footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+</style>
     <!-- START FOOTER -->
-    <footer class="page-footer">
+    <footer class="page-footer" id="footer">
         <div class="footer-copyright">
             <div class="container">
                 Copyright © 2018 <a class="grey-text text-lighten-4" href="https://vidaplena.pythonanywhere.com" target="_blank">Vida Plena</a> Todos los derechos reservados.
 
-                <span class="right"> Desarrollado por Humberto Andueza y Wilersy Hidalgo</span>
+                <span> Desarrollado por Humberto Andueza y Wilersy Hidalgo</span>
             </div>
         </div>
     </footer>
