@@ -146,7 +146,7 @@ else:
     #aqui se debe colocar el servicio smpt para el envio real de correos
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.gmail.com' # mail service smtp
-    EMAIL_HOST_USER = 'paolabarazarte502@gmail.com' # email id
-    EMAIL_HOST_PASSWORD = '26972489' #password
+    EMAIL_HOST_USER = 'humbertoanduezaa@gmail.com' # email id
+    EMAIL_HOST_PASSWORD = '01051998a' #password
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
