@@ -43,9 +43,14 @@ class PersonasCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView)
             if form.is_valid():
                 nombre = len(request.POST['nombre'])
                 if nombre <= 3:
-                    print ('Hay un error en el nombre')
-                form.save()
-                data['form_is_valid'] = True
+                    data['error'] = "El nombre debe contener como minimo 3 caracteres"
+                    data['error'] += ",Hola"
+                    data['error'] += ",Otro Error"
+
+                    data['form_is_valid'] = False
+                else:
+                    form.save()
+                    data['form_is_valid'] = True
             else:
                 data['form_is_valid'] = False
         else:
