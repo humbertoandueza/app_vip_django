@@ -29,7 +29,7 @@
     <meta name="msapplication-TileImage" content="{% static 'images/favicon/mstile-144x144.png'%}">
     <!-- For Windows Phone -->
 
-
+    <link href="{% static 'select2/select2.min.css'%}" rel="stylesheet" />
 
     <!-- CORE CSS-->
     <link href="{% static 'css/materialize.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
@@ -161,33 +161,23 @@
                                 <ul>
                                     <li class="bold {% if request.path == '/panel/ingreso' %}active{%endif%}"><a href="{% url 'persona:personas' %}">Listado</a>
                                     </li>
-                                    <li class="bold {% if request.path == '/panel/listado' %}active{%endif%}"><a href="{% url 'persona:crear' %}">Registrar</a>
-                                    <li><a href="#">Listado</a>
-                                    <li><a href="#">Reportes</a>
-
-
-                                    </li>
                                 </ul>
                             </div>
                         </li>
                     </ul>
                 </li>
                 <li class="no-padding">
-                    <ul class="collapsible collapsible-accordion">
-                        <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel"></i> Control de Actividades</a>
-                            <div class="collapsible-body">
-                                <ul>
-                                    <li class="bold active"><a href="">Registro </a>
-                                    </li>
-                                    <li><a href="">Listados</a>
-                                    <li><a href="">Reportes</a>
-
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
+                        <ul class="collapsible collapsible-accordion">
+                            <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Diezmos</a>
+                                <div class="collapsible-body">
+                                    <ul>
+                                        <li class="bold {% if request.path == '/panel/ingreso' %}active{%endif%}"><a href="{% url 'diezmo:ingresos' %}">Listado Ingresos</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
             </ul>
                 <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating btn-medium waves-effect waves-light hide-on-large-only cyan"><i class="mdi-navigation-menu"></i></a>
             </aside>
@@ -264,6 +254,7 @@
     <script type="text/javascript" src="{% static 'js/plugins/dropify/js/dropify.min.js'%}"></script>
     <script type="text/javascript" src="{% static 'js/plugins/formatter/jquery.formatter.min.js'%}"></script>  
 
+    <script type="text/javascript" src="{% static 'select2/select2.min.js'%}"></script>
 
 
     <!--plugins.js - Some Specific JS codes for Plugin Settings-->

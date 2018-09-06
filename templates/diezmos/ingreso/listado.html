@@ -10,7 +10,9 @@
         <script src="{% static 'datatables/vfs_fonts.js'%}"></script>
         <script src="{% static 'datatables/buttons.html5.min.js'%}"></script>
         <script src="{% static 'datatables/dataTables.bootstrap4.min.js'%}"></script>
-        <script src="{% static 'datatables/dataTables.fixedColumns.min.js'%}"></script>
+
+        <script type="text/javascript" src="{% static 'select2/select2.min.js'%}"></script>
+
         <script>
              jQuery(document).ready(function($jquery) {
                  var table= $jquery('#postsTable').DataTable({
@@ -24,7 +26,7 @@
                      "iDisplayLength": 10,
                      "ajax": {
                          "processing": true,
-                         "url": "{% url 'persona:personasJson' %}",
+                         "url": "{% url 'diezmo:IngresosJson' %}",
                          "dataSrc": ""
                      },
                      columnDefs: [ {
@@ -37,16 +39,15 @@
     
  
                      "columns": [
-                            {"data":"fields.cedula"},
-                             { "data": "fields.cedula" },
-                             { "data": "fields.nombre" },
-                             { "data": "fields.apellido" },
-                             { "data": "fields.telefono" },
-                             { "data": "fields.correo" },
-                             { "data": "fields.roles" },
+                            {"data":"fields.fecha"},
+                             { "data": "fields.fecha" },
+                             { "data": "fields.monto" },
+                             { "data": "fields.cedula"},
+                             { "data": "fields.persona" },
+                             { "data": "fields.tipo_de_pago" },
                              {"data": null,
                                 render: function ( data, type, row ) {
-                                    return '<button onclick="actualizar('+data.pk+')" class="btn btn-primary js-update"><i class="mdi-editor-border-color"></i></button> <a class="btn btn-primary red js-borrar" onclick="borrar('+data.pk+')"><i class="mdi-action-delete"></i></a>' ;
+                                    return '<button onclick="actualizar('+data.pk+')" class="btn btn-primary js-update center"><i class="mdi-editor-border-color"></i></button>' ;
                                 }
                                 }
                          ],
@@ -73,21 +74,27 @@
 <section id="content">
 <div class="container">
   <div class="section">
+      <div class="row">
+          <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
+                <div class="capital left"></div>
+                <a class="btn btn-primary modal-full-screen right">Añadir Diezmo</a>
+
+          </div>
+        <h3 class="center">Listado de Ingresos</h3>
+
+      </div>
       <div class="row mb-2">
-      <div class="col col s10 m10 l10 offset-m1 offset-l1 offset-s1">
-        <h3 class="center">Listado de Miembros</h3>
-        <a class="btn btn-primary modal-full-screen right">Añadir Miembro</a>
+      <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
 
         <table id="postsTable" class="table">
                 <thead>
                     <tr>
                         <th>N°</th>
+                        <th>Fecha</th>
+                        <th>Monto</th>
                         <th>Cedula</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Telefono</th>
-                        <th>Correo</th>
-                        <th>Rol</th>
+                        <th>Persona</th>
+                        <th>Tipo de Pago</th>
                         <th>Opciones</th>
 
                     </tr>
@@ -97,17 +104,44 @@
                 </tbody>
            </table>
         </div>
+
     </div>
 </div>
 </div>
-
     <!--MODAL SESION EXPIRED -->
     <div id="modal1" class="modal-full">
       <div class="modal-content center">
         
     </div>
 <script>
-    var url_crear = "{% url 'persona:crear' %}";
+    var url_crear = "{% url 'diezmo:crear_ingreso' %}";
 </script>
-<script src="{% static 'ajax/ajax.js' %}" type="text/javascript"></script>
+<script src="{% static 'ajax/ajax_ingresos.js' %}" type="text/javascript"></script>
+<script>
+function capital(){
+    $.ajax({
+        url: "{% url 'diezmo:capital'%}",
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+        },
+        success: function (data) {
+            if (data['capital']== 0){
+                var color = 'color:red';
+            }else{
+                var color = 'color:green';
+            }
+            var capital = "<p style='font-size:24px;"+color+"'>Disponible: <strong>"+data['capital']+"</strong> bs.</p>"
+            $('.capital').html(capital);
+        }
+        });
+}
+capital();
+setInterval(function(){ 
+    capital();
+    }, 3000);
+
+$("#id_persona").select2();
+</script>
+
 {% endblock %}

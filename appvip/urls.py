@@ -9,7 +9,7 @@ urlpatterns = [
     #App Core Url
 	path('',include(core_urlpatterns)),
     #App Diezmos Url
-	path('panel/diezmos',include(diezmo_urlpatterns)),
+	path('panel/diezmos/',include(diezmo_urlpatterns)),
     #App Persona
 	path('panel/persona/',include(personas_urlpatterns)),
     #Urls Login
