@@ -14,7 +14,7 @@ class TipoDePago(models.Model):
 class Ingreso(models.Model):
     fecha = models.DateField(verbose_name="Fecha")
     monto = models.IntegerField(verbose_name="Monto")
-    numero_trans = models.IntegerField(verbose_name="Numero de Transferencia")
+    numero_trans = models.IntegerField(verbose_name="Numero de Transferencia",null=True,blank=True)
     persona = models.ForeignKey(Persona,on_delete=models.CASCADE)
     tipo_de_pago = models.ForeignKey(TipoDePago,on_delete=models.CASCADE)
 

@@ -4,13 +4,14 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.core import serializers
 from django.db.models import Sum
+from datetime import datetime
 import  json
 from django.views.generic.base import TemplateView
 
 #Importo El model
 from .models import Ingreso,Egreso
 #Importo Form
-from .forms import IngresoForm
+from .forms import IngresoForm,EgresoForm
 from django.template.loader import render_to_string
 # Create your views here.
 class IndexPageView(LoginRequiredMixin,TemplateView):
@@ -65,21 +66,31 @@ class IngresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
     def  get(self,request):
         return redirect('diezmo:home')
 #Funcion para Actualizar
-
+def ofrenda():
+    MesActual = datetime.now().month
+    montoofrenda = Ingreso.objects.filter(persona=130,fecha__month=MesActual).aggregate(Sum('monto'))
+    if montoofrenda['monto__sum'] == None:
+        montoofrenda = 0
+    else:
+        montoofrenda = montoofrenda['monto__sum']
+    return (montoofrenda)
 #Retorno Json Capital Disponible
 def Capital(request):
     montoingreso = Ingreso.objects.aggregate(Sum('monto'))
     montoegreso = Egreso.objects.aggregate(Sum('monto'))
+    #obtener valores de ofrenda
     if montoingreso['monto__sum'] == None or montoegreso['monto__sum'] == None:
-        capital = {"capital":0}
+        capital = {"total":0,"ofrenda":ofrenda()}
 
         if montoingreso['monto__sum'] != None:
-            capital = {"capital":montoingreso['monto__sum']}
+            capital = {"total":montoingreso['monto__sum'],"ofrenda":ofrenda()}
         elif montoegreso['monto__sum'] != None:
-            capital = {"capital":-montoegreso['monto__sum']}
+            capital = {"total":-total['monto__sum'],"ofrenda":ofrenda()}
     else:
-        capital = {"capital":(montoingreso['monto__sum'] - montoegreso['monto__sum'])}
+
+        capital = {"total":(montoingreso['monto__sum'] - montoegreso['monto__sum']),"ofrenda":ofrenda()}
     return JsonResponse(capital)
+
 
 #Funcion para obtener el capital
 def capital_obtener():
@@ -95,7 +106,7 @@ def capital_obtener():
         capital = (montoingreso['monto__sum'] - montoegreso['monto__sum'])
     return capital
 
-
+#Funcion para actualizar
 def ingreso_update(request, pk):
     data = dict()
     ingreso = get_object_or_404(Ingreso, pk=pk)
@@ -132,3 +143,76 @@ def ingreso_update(request, pk):
         request=request
     )
     return JsonResponse(data)
+
+
+
+# Index del Egreso
+class IndexEgresoPageView(LoginRequiredMixin,TemplateView):
+    def get(self,request,**kwargs):
+        return render(request,'diezmos/egreso/listado.html')
+
+#Retorno Json para Imprimir con DataTables
+def EgresoJson(request):
+    dicts = []
+    monto = Egreso.objects.aggregate(Sum('monto'))
+    egresos = Egreso.objects.all()
+    for i in egresos:
+        dicts.append({"model":"model.egreso","pk":i.pk,"fields":{"fecha":i.fecha,"monto":str(i.monto)+" bs.","descripcion":i.descripcion,"concepto":i.concepto.concepto}})
+    #print ('dictionario: ',dicts)
+
+    #json = serializers.serialize('json', dicts)
+    return JsonResponse(dicts,safe=False)
+
+
+#Class Formulario Egreso
+class EgresoCreate(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
+    model = Egreso
+    template_name = 'diezmos/egreso/create.html'
+    def get(self,request,*args,**kwargs):
+        form = EgresoForm()
+        context = {'form': form}
+        html_form = render_to_string(self.template_name,
+        context,
+        request=request)
+        return JsonResponse({'html_form': html_form})
+
+class EgresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
+    def post(self,request,*args,**kwargs):
+        data = dict()
+        
+        if request.method == 'POST':
+            form = EgresoForm(request.POST)
+            capital = int(capital_obtener())
+            monto_egreso = int(request.POST['monto'])
+            resta = (capital-monto_egreso)
+            print ("\n \n \n \n resta",resta)
+
+            if resta < 0:
+                data['error'] = "El monto que intenta retirar es no coincide con el dinero disponible"
+                print (data['error'])
+                data['form_is_valid'] = False
+            else:
+                if form.is_valid():
+                    usuario = form.save(commit=False)
+                    usuario.usuario = request.user
+                    form.save()
+                    data['form_is_valid'] = True
+
+                else:
+                    data['form_is_valid'] = False
+            context = {'form': form}
+            data['html_form'] = render_to_string('diezmos/egreso/create.html',
+                context,
+                request=request
+            )
+            return JsonResponse(data)
+        else:
+            form = EgresoForm()
+
+        context = {'form': form}
+        data['html_form'] = render_to_string('diezmos/egreso/create.html',
+            context,
+            request=request)
+        return JsonResponse(data)
+    def  get(self,request):
+        return redirect('diezmo:home')
