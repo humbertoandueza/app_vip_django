@@ -26,7 +26,7 @@
                      "iDisplayLength": 10,
                      "ajax": {
                          "processing": true,
-                         "url": "{% url 'diezmo:IngresosJson' %}",
+                         "url": "{% url 'diezmo:EgresosJson' %}",
                          "dataSrc": ""
                      },
                      columnDefs: [ {
@@ -42,14 +42,8 @@
                             {"data":"fields.fecha"},
                              { "data": "fields.fecha" },
                              { "data": "fields.monto" },
-                             { "data": "fields.cedula"},
-                             { "data": "fields.persona" },
-                             { "data": "fields.tipo_de_pago" },
-                             {"data": null,
-                                render: function ( data, type, row ) {
-                                    return '<button onclick="actualizar('+data.pk+')" class="btn btn-primary js-update center"><i class="mdi-editor-border-color"></i></button>' ;
-                                }
-                                }
+                             { "data": "fields.descripcion"},
+                             { "data": "fields.concepto" }
                          ],
                          dom: 'frti<"right"p>', 
                          //'<"top"f>rt<"right"p><"button"ir>',
@@ -77,10 +71,10 @@
       <div class="row">
           <div class="col s10 m10 l10 offset-m1 offset-l1 offset-s1">
                 <div class="capital left"></div>
-                <a class="btn btn-primary modal-full-screen right">Añadir Diezmo</a>
+                <button class="btn btn-primary modal-full-screen right anadir">Añadir Egreso</button>
 
           </div>
-        <h3 class="center">Listado de Ingresos</h3>
+        <h3 class="center">Listado de Egresos</h3>
 
       </div>
       <div class="row mb-2">
@@ -92,10 +86,8 @@
                         <th>N°</th>
                         <th>Fecha</th>
                         <th>Monto</th>
-                        <th>Cedula</th>
-                        <th>Persona</th>
-                        <th>Tipo de Pago</th>
-                        <th>Opciones</th>
+                        <th>Descripcion</th>
+                        <th>Concepto</th>
 
                     </tr>
                 </thead>
@@ -114,9 +106,9 @@
         
     </div>
 <script>
-    var url_crear = "{% url 'diezmo:crear_ingreso' %}";
+    var url_crear = "{% url 'diezmo:crear_egreso' %}";
 </script>
-<script src="{% static 'ajax/ajax_ingresos.js' %}" type="text/javascript"></script>
+<script src="{% static 'ajax/ajax_egresos.js' %}" type="text/javascript"></script>
 <script>
 function capital(){
     $.ajax({
@@ -126,17 +118,15 @@ function capital(){
         beforeSend: function () {
         },
         success: function (data) {
-            if (data['total']== 0){
+            if (data['capital']== 0){
                 var color = 'color:red';
+                $(".anadir").attr("disabled", "disabled");
             }else{
                 var color = 'color:green';
+                $(".anadir").removeAttr("disabled");
+
             }
-            if(data['ofrenda'] == 0){
-                var color1 = 'color:red';
-            }else{
-                var color1 = 'color:green';
-            }
-            var capital = "<p style='font-size:20px;"+color1+"'>Ofrenda del mes: <strong>"+data['ofrenda']+"</strong> Bs.</p><p style='font-size:20px;"+color+"'>Disponible: <strong>"+data['total']+"</strong> Bs.</p>"
+            var capital = "<p style='font-size:24px;"+color+"'>Disponible: <strong>"+data['total']+"</strong> bs.</p>"
             $('.capital').html(capital);
         }
         });
