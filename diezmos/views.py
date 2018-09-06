@@ -68,7 +68,7 @@ class IngresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
 #Funcion para Actualizar
 def ofrenda():
     MesActual = datetime.now().month
-    montoofrenda = Ingreso.objects.filter(persona=130,fecha__month=MesActual).aggregate(Sum('monto'))
+    montoofrenda = Ingreso.objects.filter(persona__nombre='Ofrenda',fecha__month=MesActual).aggregate(Sum('monto'))
     if montoofrenda['monto__sum'] == None:
         montoofrenda = 0
     else:
