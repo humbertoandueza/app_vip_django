@@ -76,19 +76,30 @@ def ofrenda():
     return (montoofrenda)
 #Retorno Json Capital Disponible
 def Capital(request):
+    MesActual = datetime.now().month
+
     montoingreso = Ingreso.objects.aggregate(Sum('monto'))
+    montoingreso_mes = Ingreso.objects.filter(fecha__month=MesActual).aggregate(Sum('monto'))
+
     montoegreso = Egreso.objects.aggregate(Sum('monto'))
+
     #obtener valores de ofrenda
     if montoingreso['monto__sum'] == None or montoegreso['monto__sum'] == None:
-        capital = {"total":0,"ofrenda":ofrenda()}
+        capital = {"total":0,"ofrenda":ofrenda(),"ofrenda":ofrenda(),"diezmo":0}
 
         if montoingreso['monto__sum'] != None:
-            capital = {"total":montoingreso['monto__sum'],"ofrenda":ofrenda()}
+            capital = {"total":montoingreso['monto__sum'],"ofrenda":ofrenda(),"ofrenda":ofrenda(),"diezmo":montoingreso_mes['monto__sum']-ofrenda()}
         elif montoegreso['monto__sum'] != None:
-            capital = {"total":-total['monto__sum'],"ofrenda":ofrenda()}
+            capital = {"total":-total['monto__sum'],"ofrenda":ofrenda(),"ofrenda":ofrenda(),"diezmo":montoingreso_mes['monto__sum']-ofrenda()}
     else:
-
-        capital = {"total":(montoingreso['monto__sum'] - montoegreso['monto__sum']),"ofrenda":ofrenda()}
+        resta = int(montoingreso['monto__sum'] - montoegreso['monto__sum'])
+        if montoingreso_mes['monto__sum'] == None:
+            montoingreso_mes = 0
+        else:
+            montoingreso_mes = montoingreso_mes['monto__sum']
+        print (montoingreso_mes)
+        resta_mes = int(montoingreso_mes-ofrenda())
+        capital = {"total":resta,"ofrenda":ofrenda(),"diezmo":resta_mes}
     return JsonResponse(capital)
 
 

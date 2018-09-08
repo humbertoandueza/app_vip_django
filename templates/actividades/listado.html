@@ -1,0 +1,457 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<!--================================================================================
+	Item Name: Materialize - Material Design Admin Template
+	Version: 3.1
+	Author: GeeksLabs
+	Author URL: http://www.themeforest.net/user/geekslabs
+================================================================================ -->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="description" content="Materialize is a Material Design Admin Template,It's modern, responsive and based on Material Design by Google. ">
+    <meta name="keywords" content="materialize, admin template, dashboard template, flat admin template, responsive admin template,">
+
+    <title>Vida Plena</title>
+
+    <!--Full calendar-->
+    <link href="{% static 'fullcalendar/fullcalendar.min.css' %}" rel='stylesheet' />
+    <link href="{% static 'fullcalendar/fullcalendar.print.min.css'%}" rel='stylesheet' media='print' />
+    <!-- Favicons-->
+    <link rel="icon" href="images/favicon/favicon-32x32.png" sizes="32x32">
+    <!-- Favicons-->
+    <link rel="apple-touch-icon-precomposed" href="images/favicon/apple-touch-icon-152x152.png">
+    <!-- For iPhone -->
+    <meta name="msapplication-TileColor" content="#00bcd4">
+    <meta name="msapplication-TileImage" content="{% static 'images/favicon/mstile-144x144.png'%}">
+    <!-- For Windows Phone -->
+
+    <link href="{% static 'select2/select2.min.css'%}" rel="stylesheet" />
+
+    <!-- CORE CSS-->
+    <link href="{% static 'css/materialize.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="{% static 'css/style.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
+    <!-- Custome CSS-->
+
+    <link href="{% static 'css/custom/custom.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="{% static 'js/plugins/dropify/css/dropify.min.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
+
+    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+    <link href="{% static 'js/plugins/perfect-scrollbar/perfect-scrollbar.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="{% static 'fullcalendar/fullcalendar.min.css'%}" rel='stylesheet' />
+<link href="{% static 'fullcalendar/fullcalendar.print.min.css'%}" rel='stylesheet' media='print' />
+<script type="text/javascript" src="{% static 'js/plugins/jquery-1.11.2.min.js'%}"></script>
+
+<script src="{% static 'fullcalendar/lib/moment.min.js'%}"></script>
+
+<script src="{% static 'fullcalendar/fullcalendar.min.js'%}"></script>
+<script src="{% static 'fullcalendar/locale-all.js'%}"></script>
+<script>
+var url_crear = "{% url 'actividades:crear_actividad' %}";
+var url_json = "{% url 'actividades:actividades_json' %}";
+</script>
+
+<script src="{% static 'datapicker/js/bootstrap-datetimepicker.js'%}"></script>
+<link rel="stylesheet" href="{% static 'datapicker/css/bootstrap-datetimepicker.css'%}">
+<script>
+
+  $(document).ready(function() {
+    // Setup FullCalendar
+(function () {
+    $('#form').click(function(e){
+        e.preventDefault();
+    });
+    $.ajax({
+      dataType: "json",
+      url: "{% url 'actividades:actividades_json' %}",
+      success: function(data){
+        var datos = data;
+        console.log('los datos que tengo son ',datos);
+
+      }
+    });
+    var initialLocaleCode = 'es';
+    $('#calendar').fullCalendar({
+        header: {
+            left: 'title',
+            center: 'addEventButton',
+            right: 'month,listWeek,today prev,next'
+        },
+        defaultView: 'listWeek',
+        customButtons: {
+        addEventButton: {
+            text: 'Añadir Actividad...',
+            click: function() {
+                mostrar_modal();
+                $.ajax({
+                url: url_crear,
+                type: 'get',
+                dataType: 'json',
+                beforeSend: function () {
+                },
+                success: function (data) {
+                $("#modal2 .modal-content").html(data.html_form);
+                }
+            });
+            }
+        }
+        },
+        timeFormat: 'h(:mm)a',
+        locale: initialLocaleCode,
+        eventMouseover: function (data, event, view) {
+
+            tooltip = '<div class="tooltiptopicevent" style="width:auto;height:auto;background:#ffff;box-shadow: 0px 0px 5px 0px;position:absolute;z-index:10001;padding:10px 10px 10px 10px ;  line-height: 200%;">' + 'Titulo' + ': ' + data.title + '</br>' + 'Descripcion' + ': ' + data.descripcion + '<br>'+'Lugar: '+data.lugar+'</div>';
+
+
+            $("body").append(tooltip);
+            $(this).mouseover(function (e) {
+                $(this).css('z-index', 10000);
+                $('.tooltiptopicevent').fadeIn('500');
+                $('.tooltiptopicevent').fadeTo('10', 1.9);
+            }).mousemove(function (e) {
+                $('.tooltiptopicevent').css('top', e.pageY + 10);
+                $('.tooltiptopicevent').css('left', e.pageX + 20);
+            });
+
+
+        },
+        eventClick: function(event,element) {
+            event.title = "CLICKED!";
+            event.descripcion = "CLICKED!";
+            event.color = "red",
+
+
+            $('#calendar').fullCalendar('updateEvent', event);
+        },
+        eventMouseout: function (data, event, view) {
+            $(this).css('z-index', 8);
+
+            $('.tooltiptopicevent').remove();
+
+        },
+        dayClick: function () {
+            tooltip.hide()
+        },
+        eventResizeStart: function () {
+            tooltip.hide()
+        },
+        eventDragStart: function () {
+            tooltip.hide()
+        },
+        viewDisplay: function () {
+            tooltip.hide()
+        },
+        events: {
+        url: url_json,
+        error: function() {
+          $('#script-warning').show();
+        }
+      }
+    });
+
+}());
+
+  });
+
+</script>
+<style>
+
+  #calendar {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+</style>
+
+</head>
+
+<body>
+    <!-- Start Page Loading -->
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+    </div>
+    <!-- End Page Loading -->
+
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+
+    <!-- START HEADER -->
+    <header id="header" class="page-topbar">
+        <!-- start header nav-->
+        <div class="navbar-fixed">
+            <nav class="navbar-color">
+                <div class="nav-wrapper">
+
+                    <ul class="left">
+                      <li><h1 class="logo-wrapper"><a href="{% url 'core:panel' %}" class="brand-logo darken-1"><img src="{% static 'assets/img/logo.png'%}" alt="materialize logo"></a> <span class="logo-text">Vida Plena</span></h1></li>
+
+                    </ul>
+                    <ul class="right hide-on-med-and-down">
+                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light notification-button" data-activates="notifications-dropdown"><i class="mdi-social-notifications"></i></a></li>
+                    </ul>
+
+                    <!-- notifications-dropdown -->
+                    <ul id="notifications-dropdown" class="dropdown-content">
+                      <li>
+                        <h5>NOTIFICATIONS <span class="new badge">5</span></h5>
+                      </li>
+                      <li class="divider"></li>
+                      <li>
+                        <a href="#!"><i class="mdi-action-add-shopping-cart"></i> A new order has been placed!</a>
+                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">2 hours ago</time>
+                      </li>
+                      <li>
+                        <a href="#!"><i class="mdi-action-stars"></i> Completed the task</a>
+                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">3 days ago</time>
+                      </li>
+                      <li>
+                        <a href="#!"><i class="mdi-action-settings"></i> Settings updated</a>
+                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">4 days ago</time>
+                      </li>
+                      <li>
+                        <a href="#!"><i class="mdi-editor-insert-invitation"></i> Director meeting started</a>
+                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">6 days ago</time>
+                      </li>
+                      <li>
+                        <a href="#!"><i class="mdi-action-trending-up"></i> Generate monthly report</a>
+                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">1 week ago</time>
+                      </li>
+                    </ul>
+                    <div class="right">
+                    
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- end header nav-->
+    </header>
+    <!-- END HEADER -->
+
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+
+    <!-- START MAIN -->
+    <div id="main">
+        <!-- START WRAPPER -->
+        <div class="wrapper">
+
+            <!-- START LEFT SIDEBAR NAV-->
+            <aside id="left-sidebar-nav">
+                <ul id="slide-out" class="side-nav fixed leftside-navigation">
+                <li class="user-details cyan darken-2">
+                <div class="row">
+                <div class="col col s4 m4 l4">
+                    {% if request.user.perfil.avatar %}
+                    <img src="{{request.user.perfil.avatar.url}}" alt="" class=" responsive-img valign profile-image">
+                    {% else %}
+                    <img src="{% static 'images/no-avatar.jpg' %}" alt="" class=" responsive-img valign profile-image">
+                    {% endif %}
+
+                    
+                </div>
+                    <div class="col col s8 m8 l8">
+                        <ul id="profile-dropdown" class="dropdown-content">
+                            <li><a href="#"><i class="mdi-action-face-unlock"></i> Perfil</a>
+                            </li>
+                            <li><a href="#"><i class="mdi-action-settings"></i> Settings</a>
+                            </li>
+                            <li><a href="#"><i class="mdi-communication-live-help"></i> Help</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="#"><i class="mdi-action-lock-outline"></i> Lock</a>
+                            </li>
+                            <li><a href="{% url 'logout' %}"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
+                            </li>
+                        </ul>
+                        <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">{{user.first_name}}<i class="mdi-navigation-arrow-drop-down right"></i></a>
+                        {% if request.user.is_superuser%}
+                        <p class="user-roal">Administrador</p>
+                        {% else %}
+                        <p class="user-roal">Staff</p>
+                        {% endif %}
+                    </div>
+                </div>
+                </li>
+                <li class="bold {% if request.path == '/panel' %}active{%endif%}"><a href="{% url 'core:panel' %}" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Inicio</a>
+                </li>
+                <li class="no-padding">
+                    <ul class="collapsible collapsible-accordion">
+                        <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Miembros</a>
+                            <div class="collapsible-body">
+                                <ul>
+                                    <li class="bold {% if request.path == '/panel/persona/' %}active{%endif%}"><a href="{% url 'persona:personas' %}">Listado</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="no-padding">
+                        <ul class="collapsible collapsible-accordion">
+                            <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Diezmos</a>
+                                <div class="collapsible-body">
+                                    <ul>
+                                        <li class="bold {% if request.path == '/panel/diezmos/ingresos' %}active{%endif%}"><a href="{% url 'diezmo:ingresos' %}">Listado Ingresos</a>
+                                        </li>
+                                    </ul>
+                                    <ul>
+                                        <li class="bold {% if request.path == '/panel/diezmos/egresos' %}active{%endif%}"><a href="{% url 'diezmo:egresos' %}">Listado Egresos</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+            </ul>
+                <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating btn-medium waves-effect waves-light hide-on-large-only cyan"><i class="mdi-navigation-menu"></i></a>
+            </aside>
+            <!-- START CONTENT -->
+                <section id="content">
+                    <div class="container">
+                        <div class="row">
+                            <h3 class="center">Actividades</h3>
+
+                        </div>
+                        <div class="row ">
+                            <div class="col col s9 m9 l0 offset-s1 offset-m1 offset-l1 center" style="margin-bottom: 50px;">
+                                <div id='calendar'></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            <!-- END CONTENT -->
+
+            <!-- //////////////////////////////////////////////////////////////////////////// -->
+            <!-- START RIGHT SIDEBAR NAV-->
+
+            <!-- LEFT RIGHT SIDEBAR NAV-->
+
+        </div>
+        <!-- END WRAPPER -->
+
+    </div>
+    <!--MODAL SESION EXPIRED -->
+        <p><a class="waves-effect waves-light btn modal-trigger  light-blue hidden hide" href="#modal1">Modal</a>
+                </p>
+
+                <div id="modal1" class="modal">
+                  <div class="modal-content center">
+                    <div class="center">
+                        <i class="mdi-action-info-outline large" style="color: red !important;font-size: 190px;"></i>
+                        <h5 style="text-transform: uppercase;">{{request.user.first_name}}</h5>
+                    <h5><strong>¡Su Sesión esta a punto de Expirar!</strong></h5>
+                    <p>!Si desea mantener la sesión activa redireccione a otra seccion! </p>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Aceptar</a>
+                  </div>
+                </div>
+    <!--MODAL SESION EXPIRED -->
+    <div id="modal2" class="modal-full">
+            <div class="modal-content center">
+              
+          </div>
+    </div>
+    <!-- END MAIN -->
+  <div class="fixed-action-btn" style="bottom: 50px; right: 19px;" >
+      <a class="btn-floating btn-large tooltipped" href="{% url 'core:panel' %}" data-position="left" data-delay="50" data-tooltip="Pagina de Inicio">
+        <i class="mdi-action-home"></i>
+      </a>
+  </div>
+
+
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+    <style>
+    #footer {
+    bottom: 0;
+    width: 100%;
+}
+</style>
+    <!-- START FOOTER -->
+    <footer class="page-footer" id="footer">
+        <div class="footer-copyright">
+            <div class="container">
+                Copyright © 2018 <a class="grey-text text-lighten-4" href="https://vidaplena.pythonanywhere.com" target="_blank">Vida Plena</a> Todos los derechos reservados.
+
+                <span> Desarrollado por Humberto Andueza y Wilersy Hidalgo</span>
+            </div>
+        </div>
+    </footer>
+    <!-- END FOOTER -->
+
+
+    <!-- ================================================
+    Scripts
+    ================================================ -->
+
+    <!-- jQuery Library -->
+    <!--materialize js-->
+    <script type="text/javascript" src="{% static 'js/materialize.js'%}"></script>
+    <script type="text/javascript" src="{% static 'ajax/ajax_actividades.js'%}"></script> 
+    <!--scrollbar-->
+    <script type="text/javascript" src="{% static 'js/plugins/perfect-scrollbar/perfect-scrollbar.min.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/dropify/js/dropify.min.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/formatter/jquery.formatter.min.js'%}"></script>  
+
+    <script type="text/javascript" src="{% static 'select2/select2.min.js'%}"></script>
+
+
+    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+    <script type="text/javascript" src="{% static 'js/plugins.min.js'%}"></script>
+    <!--custom-script.js - Add your own theme custom JS-->
+    <script type="text/javascript" src="{% static 'js/custom-script.js'%}"></script>
+    <!-- Toast Notification -->
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.tooltipped').tooltip({delay: 50});
+          });
+        $('.datepicker').pickadate({
+        monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        weekdaysFull: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+        selectMonths: true,
+        selectYears: 100, // Puedes cambiarlo para mostrar más o menos años
+        today: 'Hoy',
+        clear: 'Limpiar',
+        close: 'Ok',
+        labelMonthNext: 'Siguiente mes',
+        labelMonthPrev: 'Mes anterior',
+        labelMonthSelect: 'Selecciona un mes',
+        labelYearSelect: 'Selecciona un año',
+        });
+    </script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+            setTimeout(function(){
+                $('.toast').click();
+            },2000);
+            setTimeout(function() {
+            $('.modal-trigger').click();
+            setTimeout(function() {
+                location.href = '{% url 'logout' %}'
+            },15000);
+            }, 144440000);
+          });
+
+</script>
+<script type="text/javascript">
+    function miclick() {
+        $('.id_avatar').click();
+    }
+</script>
+<script type="text/javascript">
+        $(document).ready(function(){
+            // Basic
+            $('.dropify').dropify();
+        });
+    </script>
+</body>
+
+</html>

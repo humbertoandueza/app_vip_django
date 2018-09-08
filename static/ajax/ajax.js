@@ -145,8 +145,7 @@ $("#modal1").on("submit", ".js-book-borrar-form", function (e) {
     var form = $(this);
     $.ajax({
     url: form.attr("action"),
-    data: form.serialize(),
-    type: form.attr("method"),
+    type: 'get',
     dataType: 'json',
     success: function (data) {
         if (data.form_is_valid) {
@@ -175,6 +174,104 @@ var loader = `
     </div>
 </div>
 `;
+
+function ver(numero){
+    mostrar_modal();
+    var url = window.location;
+
+    $.ajax({
+        url: url+"ver_persona/"+numero,
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+        },
+        success: function (data) {
+            var  form = `
+                <style>
+                table, th, td {
+                border-collapse: collapse;
+                background-color:#00b0f0;
+                color:#fff;
+                border-radius:10px;
+                }
+                th, td {
+                padding: 5px;
+                border-bottom: 2px solid #fff;
+
+                text-align: center;
+                }
+                td{
+                    border-left: 5px solid #fff;
+
+                    padding:15px;
+                }
+                td{
+                    text-align:left;
+                    font-weight:bold;
+                }
+                </style>
+            <div class="row">
+                <div class="col m3 offset-m3">
+                    <i class="mdi-action-account-circle prefix large left" style="font-size: 190px;"></i>
+
+                </div>
+                <div class="col m2" style="padding:0px;">
+                <h5 class="left" style="font-size:60px;margin-top:80px;font-weight:bold;">${data.persona.nombre} ${data.persona.apellido}</h5>
+
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col col m6 offset-m3 s12">
+                <table style="width:100%;margin-bottom:5px;" class="table">
+                <tr>
+                  <th>Cedula:</th>
+                  <td>${data.persona.cedula}</td>
+                </tr>
+                <tr>
+                  <th>Nombre:</th>
+                  <td>${data.persona.nombre}</td>
+                </tr>
+                <tr>
+                <th>Apellido:</th>
+                  <td>${data.persona.apellido}</td>
+                </tr>
+                <tr>
+                  <th>Telefono:</th>
+                  <td>${data.persona.telefono}</td>
+                </tr>
+                <th>Direcion:</th>
+                  <td>${data.persona.direccion}</td>
+                </tr>
+                <tr>
+                <th>Correo:</th>
+                  <td>${data.persona.correo}</td>
+                </tr>
+                <tr>
+                <th>Rol:</th>
+                  <td>${data.persona.rol}</td>
+                </tr>
+                <tr>
+              </table>
+              <button class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button>    
+                </div>
+            </div>
+            `;
+            console.log(data);
+            $("#modal1 .modal-content").html(form);
+
+            //$("#modal1 .modal-content").append("<p>"+data.persona.cedula+"</p>");
+            //$("#modal1 .modal-content").append("<p>"+data.persona.nombre+"</p>");
+            
+            //$("#modal1 .modal-content").append("<p>"+data.persona.apellido+"</p>");
+            //$("#modal1 .modal-content").append("<p>"+data.persona.telefono+"</p>");
+            //$("#modal1 .modal-content").append("<p>"+data.persona.direccion+"</p>");
+            //$("#modal1 .modal-content").append("<p>"+data.persona.rol+"</p>");
+            //$("#modal1 .modal-content").append("<p>"+data.persona.correo+"</p>");
+
+        }
+        });
+}
 function mostrar_modal(){
     $('#modal1 .modal-content').html(loader);
     $('.modal-full').css("display", "block");

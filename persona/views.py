@@ -65,7 +65,11 @@ class PersonasCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView)
         return redirect('persona:personas')
 
 
-
+# funcion Ver persona
+def ver_persona(request,pk):
+    persona = get_object_or_404(Persona,pk=pk)
+    json ={"persona":{"nombre":persona.nombre,"apellido":persona.apellido,"cedula":persona.cedula,"direccion":persona.direccion,"telefono":persona.telefono,"correo":persona.correo,"rol":persona.roles}}
+    return JsonResponse(json) 
 #Funcion Actualizar Persona
 
 def persona_update(request, pk):
@@ -104,6 +108,6 @@ def persona_delete(request, pk):
 
 #Retorno Json para Imprimir con DataTables 
 def PersonasJson(request):
-    personas = Persona.objects.all()
+    personas = Persona.objects.exclude(nombre="Ofrenda")
     json = serializers.serialize('json', personas)
     return HttpResponse(json, content_type='application/json')

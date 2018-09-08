@@ -118,7 +118,7 @@ function capital(){
         beforeSend: function () {
         },
         success: function (data) {
-            if (data['capital']== 0){
+            if (data['total']== 0){
                 var color = 'color:red';
                 $(".anadir").attr("disabled", "disabled");
             }else{

@@ -136,7 +136,13 @@ function capital(){
             }else{
                 var color1 = 'color:green';
             }
-            var capital = "<p style='font-size:20px;"+color1+"'>Ofrenda del mes: <strong>"+data['ofrenda']+"</strong> Bs.</p><p style='font-size:20px;"+color+"'>Disponible: <strong>"+data['total']+"</strong> Bs.</p>"
+            if(data['diezmo'] == 0){
+                var color2 = 'color:red';
+            }else{
+                var color2 = 'color:green';
+            }
+            var capital = "<p style='font-size:20px;"+color1+"'>Ofrenda del mes: <strong>"+data['ofrenda']+"</strong> Bs.</p><p style='font-size:20px;"+color2+"'>Diezmo del mes: <strong>"+data['diezmo']+"</strong> Bs.</p><p style='font-size:20px;"+color+"'>Disponible: <strong>"+data['total']+"</strong> Bs.</p>"
+            console.log(data);
             $('.capital').html(capital);
         }
         });
