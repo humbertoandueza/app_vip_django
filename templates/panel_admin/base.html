@@ -169,21 +169,37 @@
                     </ul>
                 </li>
                 <li class="no-padding">
-                        <ul class="collapsible collapsible-accordion">
-                            <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Diezmos</a>
-                                <div class="collapsible-body">
-                                    <ul>
-                                        <li class="bold {% if request.path == '/panel/diezmos/ingresos' %}active{%endif%}"><a href="{% url 'diezmo:ingresos' %}">Listado Ingresos</a>
-                                        </li>
-                                    </ul>
-                                    <ul>
-                                        <li class="bold {% if request.path == '/panel/diezmos/egresos' %}active{%endif%}"><a href="{% url 'diezmo:egresos' %}">Listado Egresos</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
+                    <ul class="collapsible collapsible-accordion">
+                        <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Diezmos</a>
+                            <div class="collapsible-body">
+                                <ul>
+                                    <li class="bold {% if request.path == '/panel/diezmos/ingresos' %}active{%endif%}"><a href="{% url 'diezmo:ingresos' %}">Listado Ingresos</a>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li class="bold {% if request.path == '/panel/diezmos/egresos' %}active{%endif%}"><a href="{% url 'diezmo:egresos' %}">Listado Egresos</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="no-padding">
+                    <ul class="collapsible collapsible-accordion">
+                        <li class="bold active"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel "></i> Control de Actividades</a>
+                            <div class="collapsible-body">
+                                <ul>
+                                    <li class="bold {% if request.path == '/panel/actividades' %}active{%endif%}"><a href="{% url 'actividades:home' %}">Calendario</a>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li class="bold {% if request.path == '/panel/actividades/estadisticas' %}active{%endif%}"><a href="{% url 'actividades:estadisticas' %}">Estadisticas</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
             </ul>
                 <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating btn-medium waves-effect waves-light hide-on-large-only cyan"><i class="mdi-navigation-menu"></i></a>
             </aside>

@@ -40,19 +40,26 @@ class PersonasCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView)
         
         if request.method == 'POST':
             form = PersonaForm(request.POST)
-            if form.is_valid():
-                nombre = len(request.POST['nombre'])
-                if nombre <= 3:
-                    data['error'] = "El nombre debe contener como minimo 3 caracteres"
-                    data['error'] += ",Hola"
-                    data['error'] += ",Otro Error"
+            if not Persona.objects.filter(cedula=request.POST['cedula']).exists():
+                if form.is_valid():
+                    nombre = len(request.POST['nombre'])
+                    ofrenda = request.POST['nombre']
+                    
+                    if nombre <= 3:
+                        data['error'] = "El nombre debe contener como minimo 3 caracteres"
+                        data['form_is_valid'] = False
 
-                    data['form_is_valid'] = False
+                    elif ofrenda.lower() == "ofrenda":
+                        print (ofrenda)
+                        data['error'] = "El nombre introducido no es valido"
+                        data['form_is_valid'] = False
+                    else:
+                        form.save()
+                        data['form_is_valid'] = True
                 else:
-                    form.save()
-                    data['form_is_valid'] = True
+                    data['form_is_valid'] = False
             else:
-                data['form_is_valid'] = False
+                data['error'] = 'Ya esta registrada esta cedula'
         else:
             form = PersonaForm()
 
@@ -77,11 +84,14 @@ def persona_update(request, pk):
     persona = get_object_or_404(Persona, pk=pk)
     if request.method == 'POST':
         form = PersonaForm(request.POST, instance=persona)
-        if form.is_valid():
-            form.save()
-            data['form_is_valid'] = True
+        if not Persona.objects.filter(cedula=request.POST['cedula']).exists() or persona.cedula == request.POST['cedula'] :
+            if form.is_valid():
+                form.save()
+                data['form_is_valid'] = True
+            else:
+                data['form_is_valid'] = False
         else:
-            data['form_is_valid'] = False
+            data['error'] = 'Ya esta registrada esta cedula'
     else:
         form = PersonaForm(instance=persona)
     context = {'form': form}

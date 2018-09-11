@@ -51,8 +51,9 @@ class Actividades(models.Model):
     fecha = models.DateField(verbose_name="Fecha")
     hora = models.TimeField(verbose_name="Hora")
     lugar = models.TextField(verbose_name="Lugar")
+    suspended = models.BooleanField(default=False)
     persona = models.ForeignKey(Persona,on_delete=models.CASCADE)
-    status = models.ForeignKey(Status,on_delete=models.CASCADE)
+    status = models.ForeignKey(Status,on_delete=models.CASCADE,blank=True,null=True)
     tipo = models.ForeignKey(Tipo_actividad,on_delete=models.CASCADE)
     entrenamiento = models.ForeignKey(Entrenamiento,blank=True,null=True,on_delete=models.CASCADE)
 

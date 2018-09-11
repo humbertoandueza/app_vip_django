@@ -71,6 +71,7 @@ function actualizar(numero){
     var btn = $('.js-update');
      $(function () {
         var url = window.location;
+        console.log(url);
         $.ajax({
         url: url+"actualizar/"+numero,
         type: 'get',
@@ -112,6 +113,11 @@ $("#modal1").on("submit", ".js-book-update-form", function (e) {
         }
         else {
         $("#modal1 .modal-content").html(data.html_form);
+        var error = data.error.split(',');
+        for(var i = 0;i < error.length; i+=1){
+            $('#error').append('<p style="color:red;">'+error[i]+'</p>');
+            console.log(error[i]);
+        }
         }
     }
     });

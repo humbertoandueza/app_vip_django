@@ -23,23 +23,24 @@ $(document).ready(function(){
 
 //Ajax para crear el miembro
 $("#modal2").on("submit", ".js-book-create-form", function (e) {
-    console.log('entro aqui');
     var form = $(this);
+    var datos = $("#form :input").serializeArray();
     $.ajax({
     url: form.attr("action"),
     data: form.serialize(),
     type: form.attr("method"),
     dataType: 'json',
     success: function (data) {
-        console.log(data);
         if (data.form_is_valid) {
             Materialize.toast('Actividad Registrada', 3000, 'rounded')
-            console.log('Inicio', data.start);
             $('#calendar').fullCalendar('renderEvent', {
+                id: data.id,
                 title: data.title,
                 start: data.start,
                 descripcion:data.descripcion,
                 lugar:data.lugar,
+                estatus:'Por Realizar',
+                color : '#00B0F0',
                 allDay: false
               });
             cerrar_modal();  // <-- This is just a placeholder for now for testing
@@ -73,28 +74,15 @@ function actualizar(numero){
         beforeSend: function () {
         },
         success: function (data) {
-            $("#modal1 .modal-content").html(data.html_form);
+            $("#modal2 .modal-content").html(data.html_form);
         }
         });
     });
 }
 //Ajax para Actualizar
-$("#modal1").on("submit", ".js-book-update-form", function (e) {
+$("#modal2").on("submit", ".js-book-update-form", function (e) {
     
     var form = $(this);
-    var data = $("#form :input").serializeArray();
-    for (var i = 0; i < data.length; i+=1) {
-        if(data[i].name == "cedula"){
-            //console.log('cedula: ', data[i].value.length);
-            if(data[i].value.length <=6 || data[i].value.length >8 ){
-                $( "#id_cedula" ).addClass( "invalid" );
-                $('#error').html('<p style="color:red; margin-left:40px;">La cedula no es correcta</p>');
-                //alert('La cedula no cumple con lo requerido');
-                return false;                
-            }
-        } 
-    }
-
     $.ajax({
     url: form.attr("action"),
     data: form.serialize(),
@@ -102,11 +90,29 @@ $("#modal1").on("submit", ".js-book-update-form", function (e) {
     dataType: 'json',
     success: function (data) {
         if (data.form_is_valid) {
-            Materialize.toast('Miembro Actualizado', 3000, 'rounded')
+            Materialize.toast('Estatus Actualizado', 3000, 'rounded');
+            if(data.create){
+                $('#calendar').fullCalendar('renderEvent', {
+                    id: data.id,
+                    title: data.title,
+                    start: data.start,
+                    descripcion:data.descripcion,
+                    lugar:data.lugar,
+                    estatus:data.estatus,
+                    color : data.color,
+                    allDay: false
+                  });
+            }else{
+                evento.color = data.color,
+                evento.estatus = data.estatus,
+                evento.start = data.start,
+                $('#calendar').fullCalendar('updateEvent', evento);
+            }
+
             cerrar_modal();  // <-- This is just a placeholder for now for testing
         }
         else {
-        $("#modal1 .modal-content").html(data.html_form);
+        $("#modal2 .modal-content").html(data.html_form);
         }
     }
     });
@@ -128,7 +134,7 @@ function borrar(numero){
         beforeSend: function () {
         },
         success: function (data) {
-            $("#modal1 .modal-content").html(data.html_form);
+            $("#modal2 .modal-content").html(data.html_form);
         }
         });
     });
@@ -172,7 +178,7 @@ var loader = `
 
 
 function mostrar_modal(){
-    $('#modal1 .modal-content').html(loader);
+    $('#modal2 .modal-content').html(loader);
     $('.modal-full').css("display", "block");
     $('.modal-full').css("z-index", "1003");
 }
@@ -180,5 +186,5 @@ function mostrar_modal(){
 //modals personalizados
 function cerrar_modal(){
     $('.modal-full').css("display", "none");
-    $('#modal1 .modal-content').html(loader);
+    $('#modal2 .modal-content').html(loader);
 }

@@ -1,12 +1,15 @@
+{% if not actividad.suspended %}
+{% if actividad.status.status == "Por Realizar" %}
+
 <style>
     select{
         display: block;
     }
 </style>
-<form action="{% url 'actividades:post_actividad' %}" id="form" method="post" class="js-book-create-form">
+<form action="{% url 'actividades:actualizar_status' form.instance.pk %}" id="form" method="post" class="js-book-update-form">
     {% csrf_token %}
-    {{form.as_p}}
-    <button class="btn btn-primary">Guardar Actividad</button>
+    {{form.status}}
+    <button class="btn btn-primary">Actualizar Estatus</button>
     <a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
 </form>
 <script type="text/javascript">
@@ -25,6 +28,21 @@
         labelMonthSelect: 'Selecciona un mes',
         labelYearSelect: 'Selecciona un año',
         });*/
+$('#id_fecha').attr("type","date");
+$('#id_hora').attr("type","time");
+</script>
+{% endif %}
+{% if actividad.status.status == "Suspendida" %}
+<h1>Nueva Fecha de la actividad</h1>
+<form action="{% url 'actividades:actualizar_status' form.instance.pk %}" id="form" method="post" class="js-book-update-form">
+    {% csrf_token %}
+    <h4>{{form.nombre.value}}</h4>
+    <input type="date" name="fecha" id="id_fecha">
+    <input type="datetime" name="hora" id="id_hora" required>
+    <button class="btn btn-primary">Actualizar Estatus</button>
+    <a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
+</form>
+<script>
 $('#id_hora').attr("type","time");
 var d = new Date();
 
@@ -46,5 +64,15 @@ $('#id_fecha').pickadate({
     labelMonthSelect: 'Selecciona un mes',
     labelYearSelect: 'Selecciona un año',
 });
+</script>
+{% endif %}
+{% if actividad.status.status == 'Realizada' %}
+<h1>Esta actividad a sido completada</h1>
+<a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
+{% endif %}
+{% else %}
 
-</script> 
+<h1>Esta actividad a sido reasignada a otra fecha</h1>
+<a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
+
+{% endif%}
