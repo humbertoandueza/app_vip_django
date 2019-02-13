@@ -29,23 +29,23 @@
 
 
   <!-- CORE CSS-->
-  
+
   <link href="{% static 'css/materialize.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
   <link href="{% static 'css/style.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
-    <!-- Custome CSS-->    
+    <!-- Custome CSS-->
     <link href="{% static 'css/custom/custom.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
   <link href="{% static 'css/layouts/page-center.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
 
   <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
   <link href="{% static 'js/plugins/prism/prism.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
   <link href="{% static 'js/plugins/perfect-scrollbar/perfect-scrollbar.css'%}" type="text/css" rel="stylesheet" media="screen,projection">
-  
+
 </head>
 
 <body class="light-blue">
   <!-- Start Page Loading -->
   <div id="loader-wrapper">
-      <div id="loader"></div>        
+      <div id="loader"></div>
       <div class="loader-section section-left"></div>
       <div class="loader-section section-right"></div>
   </div>
@@ -67,7 +67,7 @@
         <div class="row margin">
           <div class="input-field col s12">
             <i class="mdi-social-person-outline prefix"></i>
-            <input id="id_username" name="username" type="text">
+            <input id="id_username" name="username" type="email" required>
             <label for="username" class="center-align">Usuario</label>
           </div>
         </div>
@@ -86,7 +86,7 @@
         <div class="row">
           <div class="input-field col s12 m12 l12 center">
               <p class="margin right-align medium-small"><a href="{% url 'password_reset' %}">¿Olvido Su clave?</a></p>
-          </div>          
+          </div>
         </div>
         {% for error in form.non_field_errors %}
 		<div id="card-alert" class="card red">
