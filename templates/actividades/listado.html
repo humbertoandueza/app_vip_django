@@ -54,7 +54,15 @@
 <script>
 var url_crear = "{% url 'actividades:crear_actividad' %}";
 var url_json = "{% url 'actividades:actividades_json' %}";
+
 </script>
+ {# JQUERY FILE UPLOAD SCRIPTS #}
+  <script src="{% static 'js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload.js' %}"></script>
+
+  {# PHOTOS PAGE SCRIPTS #}
+  <!--<script src="{% static 'js/progress-bar-upload.js' %}"></script>-->
 
 <script src="{% static 'datapicker/js/bootstrap-datetimepicker.js'%}"></script>
 <link rel="stylesheet" href="{% static 'datapicker/css/bootstrap-datetimepicker.css'%}">
@@ -84,6 +92,8 @@ var url_json = "{% url 'actividades:actividades_json' %}";
         addEventButton: {
             text: 'Añadir Actividad...',
             click: function() {
+                $("#load").hide();
+
                 mostrar_modal();
                 $.ajax({
                 url: url_crear,
@@ -114,14 +124,16 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                 $('.tooltiptopicevent').css('top', e.pageY + 10);
                 $('.tooltiptopicevent').css('left', e.pageX + 20);
             });
-
-
         },
         eventClick: function(event,element) {
             if (event.estatus == "Por Realizar" || event.estatus == "Suspendida" ){
                 var url_actualizar = window.location
-                id = event.id
-                evento = event
+                $("#load").hide();
+
+                var url_arre = url_actualizar.href.split('/');
+                url_arre.pop(-1)
+                var url_actualizar = url_arre[0]+'/'+url_arre[1]+'/'+url_arre[2]+'/'+url_arre[3]+'/'+url_arre[4]+'/';
+                evento = event;
                 mostrar_modal();
                 $.ajax({
                     url: url_actualizar+"actualizar/"+event.id,
@@ -130,11 +142,63 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                     beforeSend: function () {
                     },
                     success: function (data) {
-                    $("#modal2 .modal-content").html(data.html_form);
+                        $("#modal2 .modal-content").html(data.html_form);
                     }
                 });
             }if (event.estatus == "Realizada"){
+                var id = event.id;
                 mostrar_modal();
+                $("#cerrar").css({'display':'block'});
+                $('#gallery').val("");
+
+                $("#cargar").css({'display':'block'});
+                //inicia
+                  $("#load").hide();
+                  $(".js-upload-photos").click(function () {
+                    $("#fileupload").click();
+                  });
+
+                  $("#fileupload").fileupload({
+                    dataType: 'json',
+                    sequentialUploads: true,
+                    formData: {
+                      "csrfmiddlewaretoken":"{{ csrf_token }}",
+                      "id": id,
+                      "album":""
+                    },
+                    start: function (e) {
+                      //$("#modal-progress").modal("show");
+                      $("#load").show();
+                    },
+
+                    stop: function (e) {
+                      //$("#modal-progress").modal("hide");
+                      $("#load").val("");
+                      $("#load").hide("Carga Completa");
+
+                    },
+
+                    progressall: function (e, data) {
+                      var progress = parseInt(data.loaded / data.total * 100, 10);
+                      var strProgress = progress + "%";
+                      $(".determinate").css({"width": strProgress});
+                      $(".determinate").text(strProgress);
+                    },
+
+                    done: function (e, data) {
+                      if (data.result.is_valid) {
+                        $("#gallery").show();
+                        $("#gallery").prepend(
+                          //"<tr><td><a href='" + data.result.url + "'>" + data.result.name + "</a></td></tr>"
+                          "<img width='100' src='" + data.result.url + "'>"
+                        )
+                      }else{
+                        alert('error subiendo imagenes');
+                      }
+                    }
+
+                  });
+                //finaliza
                 var  form = `
                     <style>
                     table, th, td {
@@ -174,7 +238,7 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                     </style>
                 <div class="row">
                     <div class="col m3 offset-m2">
-                        <i class="mdi-action-done-all large left" style="font-size: 190px;"></i>
+                        <i class="mdi-action-done-all large left" style="font-size: 170px;"></i>
 
                     </div>
                     <div class="col m2" style="padding:0px;">
@@ -207,9 +271,9 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                     <td>${event.estatus}</td>
                     </tr>
                 </table>
-                <button class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button>    
                     </div>
                 </div>
+
                 `;
                 $("#modal2 .modal-content").html(form);
             }
@@ -463,9 +527,56 @@ var url_json = "{% url 'actividades:actividades_json' %}";
                 </div>
     <!--MODAL SESION EXPIRED -->
     <div id="modal2" class="modal-full">
-            <div class="modal-content center">
+        <div class="row" style="margin-top: 50px; display: none;" id="cargar">
+            <div class="col col m6 offset-m3 s12">
+                <div>
+                    <button type="button" class="btn btn-primary right js-upload-photos">
+                      <span class="glyphicon glyphicon-cloud-upload"></span> Cargar Fotos
+                    </button>
+                    <input accept="image/*" id="fileupload" type="file" name="file" multiple
+                           style="display: none;"
+                           data-url="{% url 'actividades:progress_bar_upload' %}"
+                           '>
+                  </div>
+            </div>
+        </div>
+        <div class="modal-content center">
               
-          </div>
+        </div>
+            <div class="row" style="margin-bottom: 60px;">
+                <div class="col col m6 offset-m3 s12">
+                    <div id="load">
+                        <center>
+                            Cargando imagenes... <br>
+                            <div class="progress">
+                              <div class="determinate" role="determinate" style="width: 70%"></div>
+                          </div>
+                            <div class="preloader-wrapper small active">
+                            <div class="spinner-layer spinner-blue-only">
+                              <div class="circle-clipper left">
+                                <div class="circle"></div>
+                              </div><div class="gap-patch">
+                                <div class="circle"></div>
+                              </div><div class="circle-clipper right">
+                                <div class="circle"></div>
+                              </div>
+                            </div>
+                        </center>
+                      </div>
+                      <div id="gallery" style="border-color: gray;">
+                          
+                      </div>
+                      <div style="display: none;" id="cerrar">
+                          <center>
+                            <button class="center btn btn-primary red" onclick="cerrar_modal();">Salir</button> 
+                          </center>
+                      </div>
+
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- END MAIN -->
   <div class="fixed-action-btn" style="bottom: 50px; right: 19px;" >

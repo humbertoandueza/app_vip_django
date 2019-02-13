@@ -8,9 +8,31 @@
 </style>
 <form action="{% url 'actividades:actualizar_status' form.instance.pk %}" id="form" method="post" class="js-book-update-form">
     {% csrf_token %}
-    {{form.status}}
-    <button class="btn btn-primary">Actualizar Estatus</button>
-    <a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
+
+    <div class="row">
+        <div class="col s12">
+            <h2>Actualizar Actividad</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m10 offset-m1">
+            <div class="row">
+                <div class="input-field col s12 m12">
+                    {{form.status}}
+                    <label for="id_status" class="active">Cambiar Estatus</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="error" class="col s10 offset-s1 center"></div>
+        </div>
+        <div class="row">
+            <div class="col m6 offset-m5 s10 offset-s1">
+                <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Registrar</button></p>
+            </div>
+        </div>
+    </div>
 </form>
 <script type="text/javascript">
             /*$('#id_fecha').pickadate({
@@ -33,14 +55,37 @@ $('#id_hora').attr("type","time");
 </script>
 {% endif %}
 {% if actividad.status.status == "Suspendida" %}
-<h1>Nueva Fecha de la actividad</h1>
 <form action="{% url 'actividades:actualizar_status' form.instance.pk %}" id="form" method="post" class="js-book-update-form">
     {% csrf_token %}
-    <h4>{{form.nombre.value}}</h4>
-    <input type="date" name="fecha" id="id_fecha">
-    <input type="datetime" name="hora" id="id_hora" required>
-    <button class="btn btn-primary">Actualizar Estatus</button>
-    <a class="btn btn-primary red" onclick="cerrar_modal()">Salir</a>
+    <div class="row">
+            <div class="col s12">
+                <h2>Mover Actividad</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+                <div class="row">
+                    <div class="input-field col s12 m12">
+                        <input type="date" name="fecha" id="id_fecha">
+                        <label for="id_fecha" class="active">Fecha de la nueva de la actividad</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m12">
+                        <input type="datetime" name="hora" id="id_hora" required>
+                        <label for="id_hora" class="active">Hora</label>
+                    </div>
+                </div>
+            <div class="row">
+                <div id="error" class="col s10 offset-s1 center"></div>
+            </div>
+            <div class="row">
+                <div class="col m6 offset-m5 s10 offset-s1">
+                    <p><a class="btn waves-effect waves-light red cerrar-modal" onclick="cerrar_modal()">Cancelar</a>
+                    <button class="btn waves-effect waves-light blue" onclick="return confirm('¿Esta seguro de realizar el registro, ya que no sera posible editarlo,ni borrarlo?')" >Registrar</button></p>
+                </div>
+            </div>
+        </div>
 </form>
 <script>
 $('#id_hora').attr("type","time");

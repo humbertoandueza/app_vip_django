@@ -12,10 +12,10 @@ $.ajax({
     if(data.length != 0){
       console.log('entro aqui');
       mostrar(data);
-      $('.fecha1').html('<h3>Estadisticas de las actividades '+monthNames[month]+'</h3>');
+      $('.fecha1').html('<h3>Estadísticas de las actividades <br><strong>'+monthNames[month-2]+'-'+monthNames[month]+'</strong></h3>');
     }else{
       console.log('no hay datos');
-      $('.fecha1').html('<h3>Estadisticas de las actividades '+monthNames[month]+'</h3>');
+      $('.fecha1').html('<h3>Estadísticas de las actividades <br><strong>'+monthNames[month-2]+'-'+monthNames[month]+'</strong></h3>');
       $('#graph').append('<i class="mdi-action-info-outline large" style="color: red !important;font-size: 190px;"></i>')
       $('#graph').append('<h4>No hay estadisticas que mostrar</h4>')
     }

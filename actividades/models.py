@@ -1,7 +1,8 @@
 from django.db import models
 from persona.models import Persona
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 # Create your models here.
-
 class Status(models.Model):
     status = models.CharField(max_length=200)
     
@@ -17,6 +18,7 @@ class Tipo_actividad(models.Model):
 class Iglesia(models.Model):
     nombre = models.CharField(verbose_name="Nombre",max_length=200)
     pastor = models.CharField(verbose_name="Pastor",max_length=200)
+    email = models.EmailField(verbose_name="Correo")
     direccion = models.TextField(verbose_name="Direccion")
     telefono = models.CharField(verbose_name="Telefono",max_length=11)
 
@@ -59,3 +61,24 @@ class Actividades(models.Model):
 
     def __str__(self):
         return '{},{},{}'.format(self.nombre,self.fecha,self.persona.nombre)
+
+class Album(models.Model):
+    actividad = models.ForeignKey(Actividades,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.actividad.nombre
+
+class Photo(models.Model):
+    file = models.FileField(upload_to='images/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    album = models.ForeignKey(Album,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.file)
+
+
+@receiver(post_delete, sender=Photo)
+def photo_post_delete_handler(sender, **kwargs):
+    listingImage = kwargs['instance']
+    storage, path = listingImage.file.storage, listingImage.file.path
+    storage.delete(path)

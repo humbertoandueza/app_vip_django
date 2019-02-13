@@ -43,6 +43,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     is_active = models.BooleanField(_('Activo'), default=True)
     is_superuser = models.BooleanField(_('Superusuario'), default=False)
+    is_administrador = models.BooleanField(_('Administrador'), default=False)
+    is_programador = models.BooleanField(_('Programador'), default=False)
+    is_iglesia = models.BooleanField(_('Iglesia'), default=False)
+
     is_staff = models.BooleanField(_('Staff'), default=True)
 
 

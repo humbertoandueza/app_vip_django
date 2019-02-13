@@ -18,6 +18,8 @@ class IndexPageView(LoginRequiredMixin,TemplateView):
     def get(self,request,**kwargs):
         return render(request,'diezmos/ingreso/listado.html')
 
+
+
 #Retorno Json para Imprimir con DataTables
 def IngresoJson(request):
     dicts = []
@@ -29,7 +31,9 @@ def IngresoJson(request):
 
     #json = serializers.serialize('json', dicts)
     return JsonResponse(dicts,safe=False)
-
+def consulta(request):
+    query = Ingreso.objects.aggregate(Sum('monto'))
+    return render(request,plantillaHtml,{'context':query})
 #Formulario del modelo Ingresos
 
 class IngresoCreate(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
