@@ -37,6 +37,7 @@
         <link href="{% static 'assets/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
         <!-- shortcodes -->
         <link href="{% static 'assets/css/shortcodes/shortcodes.css'%}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'vanillabox/theme/bitter/vanillabox.css'%}">
         <!-- Style CSS -->
         <link href="{% static 'style.css'%}" rel="stylesheet">
 
@@ -113,11 +114,14 @@
                     data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
                     data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
                     data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"
-                    data-start="800"
+                    data-start="200"
                     data-splitin="none"
                     data-splitout="none"
                     data-responsive_offset="on"
-                    style="z-index: 5; white-space: nowrap;"><center> IGLESIA <br> VIDA PLENA</center>
+                    style="z-index: 5; white-space: nowrap;">
+                      <center>
+                        Vida Plena
+                      </center>
                 </div>
 
                 <!-- LAYER NR. 2 -->
@@ -324,6 +328,84 @@
             </div><!-- /.container -->
         </section>
 
+        <section class="section-padding gray-bg">
+            <div class="container">
+
+              <div class="text-center mb-80">
+                  <h2 class="section-title text-uppercase">ALPHA</h2>
+                  <p class="section-sub">Te aduya a tener una mejor relacion</p>
+              </div>
+
+              <div class="row equal-height-row">
+
+                  <div class="col-md-3 mb-30">
+                    <div class="featured-item border-box radius-4 hover brand-hover equal-height-column">
+                        <div class="icon mb-30">
+                            <i class="material-icons brand-icon">group</i>
+                        </div>
+                        <div class="desc">
+                            <h2>ALPHA SERIES</h2>
+                            <p>General.</p>
+                            <br>
+                            <a class="waves-effect waves-light btn white">Obtener</a>
+                        </div>
+                    </div><!-- /.featured-item -->
+                  </div><!-- /.col-md-4 -->
+
+
+                  <div class="col-md-3 mb-30">
+                    <div class="featured-item border-box radius-4 hover brand-hover equal-height-column">
+                        <div class="icon mb-30">
+                            <i class="material-icons brand-icon">
+                                mood
+                                </i>
+                        </div>
+                        <div class="desc">
+                            <h2>ALPHA NIÑOS</h2>
+                            <p>Que cada niño se identifique.</p>
+                            <br>
+                            <a class="waves-effect waves-light btn white">Obtener</a>
+                        </div>
+                    </div><!-- /.featured-item -->
+                  </div><!-- /.col-md-4 -->
+
+
+                  <div class="col-md-3 mb-30">
+                    <div class="featured-item border-box radius-4 hover brand-hover equal-height-column">
+                        <div class="icon mb-30">
+                            <i class="material-icons brand-icon">accessibility</i>
+                        </div>
+                        <div class="desc">
+                            <h2>ALPHA JOVEN</h2>
+                            <p>Cada joven tenga una vision.</p>
+                            <br>
+                            <a class="waves-effect waves-light btn white">Obtener</a>
+                        </div>
+                    </div><!-- /.featured-item -->
+                  </div><!-- /.col-md-4 -->
+
+
+                  <div class="col-md-3">
+                    <div class="featured-item border-box radius-4 hover brand-hover equal-height-column">
+                        <div class="icon mb-30">
+                            <i class="material-icons brand-icon">
+                                wc
+                                </i>
+                        </div>
+                        <div class="desc">
+                            <h2>ALPHA MATRIMONIO</h2>
+                            <p>Lleve el modelo de jesus.</p>
+                            <br>
+                            <a class="waves-effect waves-light btn white">Obtener</a>
+                        </div>
+                    </div><!-- /.featured-item -->
+                  </div><!-- /.col-md-4 -->
+
+              </div><!-- /.row -->
+
+            </div><!-- /.container -->
+        </section>
+
 
 
         <section class="section-padding">
@@ -336,137 +418,11 @@
 
               <div class="portfolio-container text-center">
                   <ul class="portfolio-filter brand-filter">
-                      <li class="active waves-effect waves-light" data-group="all">Todas</li>
-                      <li class="waves-effect waves-light" data-group="websites">Top 3</li>
-                      <li class="waves-effect waves-light" data-group="branding">Ultimas</li>
-                      <li class="waves-effect waves-light" data-group="marketing">Recientes</li>
-                      <li class="waves-effect waves-light" data-group="photography">Mes pasado</li>
+                    <a class="waves-effect waves-light btn" href="#">Ver Álbumes</a>
                   </ul>
 
                   <div class="portfolio portfolio-with-title col-3 gutter mt-50">
 
-                      <div class="portfolio-item" data-groups='["all", "branding", "photography"]'>
-                          <div class="portfolio-wrapper">
-
-                            <div class="thumb">
-                                <div class="bg-overlay brand-overlay"></div>
-                                <img src="{% static 'assets/img/portfolio/portfolio-1.jpg'%}" alt="">
-
-                                <div class="portfolio-intro">
-                                  <div class="action-btn">
-                                    <a href="{% static 'assets/img/portfolio/portfolio-1.jpg'%}" class="tt-lightbox" title="iOS Game Design"> <i class="fa fa-search"></i></a>
-                                  </div>
-                                </div>
-                            </div><!-- thumb -->
-
-                            <div class="portfolio-title">
-                                <h2><a href="#">Foto 1</a></h2>
-                                <p><a href="#">Alpha Graduacion</a> </p>
-                            </div>
-
-                          </div><!-- /.portfolio-wrapper -->
-                      </div><!-- /.portfolio-item -->
-
-                      <div class="portfolio-item" data-groups='["all", "marketing", "websites"]'>
-                        <div class="portfolio-wrapper">
-                          <div class="thumb">
-                              <div class="bg-overlay brand-overlay"></div>
-                              <img src="{% static 'assets/img/portfolio/portfolio-2.jpg'%}" alt="">
-
-                              <div class="portfolio-intro">
-                                <div class="action-btn">
-                                    <a href="{% static 'assets/img/portfolio/portfolio-2.jpg'%}" class="tt-lightbox" title=""> <i class="fa fa-search"></i></a>
-                                </div>
-                              </div>
-                          </div>
-                          <div class="portfolio-title">
-                              <h2><a href="#">Foto 2</a></h2>
-                              <p><a href="#">Alpha Graduacion</a> </p>
-                          </div>
-
-                        </div><!-- /.portfolio-wrapper -->
-                      </div><!-- /.portfolio-item -->
-
-                      <div class="portfolio-item" data-groups='["all", "photography", "branding"]'>
-
-                        <div class="portfolio-wrapper">
-                          <div class="thumb">
-                              <div class="bg-overlay brand-overlay"></div>
-                              <img src="{% static 'assets/img/portfolio/portfolio-3.jpg'%}" alt="">
-
-                              <div class="portfolio-intro">
-                                <div class="action-btn">
-                                    <a href="{% static 'assets/img/portfolio/portfolio-3.jpg'%}" class="tt-lightbox" title=""> <i class="fa fa-search"></i></a>
-                                </div>
-                              </div>
-                          </div>
-                          <div class="portfolio-title">
-                              <h2><a href="#">Foto 3</a></h2>
-                              <p><a href="#">Alpha Graduacion</a> </p>
-                          </div>
-
-                        </div><!-- /.portfolio-wrapper -->
-                      </div><!-- /.portfolio-item -->
-
-                      <div class="portfolio-item" data-groups='["all", "websites", "branding"]'>
-                        <div class="portfolio-wrapper">
-                          <div class="thumb">
-                              <div class="bg-overlay brand-overlay"></div>
-                              <img src="{% static 'assets/img/portfolio/portfolio-4.jpg'%}" alt="">
-
-                              <div class="portfolio-intro">
-                                <div class="action-btn">
-                                    <a href="{% static 'assets/img/portfolio/portfolio-4.jpg'%}" class="tt-lightbox" title=""> <i class="fa fa-search"></i></a>
-                                </div>
-                              </div>
-                          </div>
-                          <div class="portfolio-title">
-                              <h2><a href="#">Foto 4</a></h2>
-                              <p><a href="#">Alpha Graduacion</a> </p>
-                          </div>
-
-                        </div><!-- /.portfolio-wrapper -->
-                      </div><!-- /.portfolio-item -->
-
-                      <div class="portfolio-item" data-groups='["all", "photography", "marketing"]'>
-                        <div class="portfolio-wrapper">
-                          <div class="thumb">
-                              <div class="bg-overlay brand-overlay"></div>
-                              <img src="{% static 'assets/img/portfolio/portfolio-5.jpg'%}" alt="">
-
-                              <div class="portfolio-intro">
-                                <div class="action-btn">
-                                    <a href="{% static 'assets/img/portfolio/portfolio-5.jpg'%}" class="tt-lightbox" title=""> <i class="fa fa-search"></i></a>
-                                </div>
-                              </div>
-                          </div>
-                          <div class="portfolio-title">
-                              <h2><a href="#">Foto 5</a></h2>
-                              <p><a href="#">Alpha Graduacion</a> </p>
-                          </div>
-
-                        </div><!-- /.portfolio-wrapper -->
-                      </div><!-- /.portfolio-item -->
-
-                      <div class="portfolio-item" data-groups='["all", "websites",  "marketing"]'>
-                        <div class="portfolio-wrapper">
-                          <div class="thumb">
-                              <div class="bg-overlay brand-overlay"></div>
-                              <img src="{% static 'assets/img/portfolio/portfolio-6.jpg'%}" alt="">
-
-                              <div class="portfolio-intro">
-                                <div class="action-btn">
-                                    <a href="#."> <i class="fa fa-link"></i>  </a>
-                                </div>
-                              </div>
-                          </div>
-                          <div class="portfolio-title">
-                              <h2><a href="#">Foto 6</a></h2>
-                              <p><a href="#">Graduacion Alpha</a> </p>
-                          </div>
-
-                        </div><!-- /.portfolio-wrapper -->
-                      </div><!-- /.portfolio-item -->
 
                   </div><!-- /.portfolio -->
 
@@ -563,6 +519,47 @@
 
         <!-- jQuery -->
         <script src="{% static 'assets/js/jquery-2.1.3.min.js'%}"></script>
+        <script type="text/javascript" src="{% static 'vanillabox/jquery.vanillabox.js'%}"></script>
+
+        <script type="text/javascript">
+          $(function () {
+            $.ajax({
+              url: "{% url 'actividades:progress_bar_upload' %}",
+              type: "GET",
+              dataType: 'json',
+              success: function (data) {
+                if(data.length > 0){
+                  data.forEach(function(e){
+                    $(".portfolio").append(`<div class="portfolio-item" >
+                            <div class="portfolio-wrapper">
+
+                              <div class="thumb">
+                                  <div class="bg-overlay brand-overlay"></div>
+                                  <img src="media/${e.fields.file}" alt="">
+
+                                  <div class="portfolio-intro">
+                                    <div class="action-btn">
+                                      <a href="media/${e.fields.file}" class="tt-lightbox"> <i class="fa fa-search"></i></a>
+                                    </div>
+                                  </div>
+                              </div><!-- thumb -->
+
+                            </div><!-- /.portfolio-wrapper -->
+                        </div><!-- /.portfolio-item -->
+                      `);
+                    
+                  });
+                  $('.action-btn a').vanillabox();
+                  $('.thumb img').vanillabox();
+                }else{
+                  $(".portfolio").append('<h2>No hay imagenes Disponibles</h2>');
+                }
+              }
+              });
+          });
+
+        </script>
+
         <script src="{% static 'assets/bootstrap/js/bootstrap.min.js'%}"></script>
         <script src="{% static 'assets/materialize/js/materialize.min.js'%}"></script>
         <script src="{% static 'assets/js/jquery.easing.min.js'%}"></script>

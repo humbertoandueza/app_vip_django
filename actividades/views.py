@@ -1,15 +1,18 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
-from .models import Actividades,Status
+from .models import Actividades,Status,Iglesia,Entrenamiento,Grupo,Material,Photo,Album
+from core.models import User
 from django.http import JsonResponse
 
 from django.http import HttpResponse
 
 from django.core import serializers
-from .forms import ActividadesForm,StatusForm
+from .forms import ActividadesForm,StatusForm,IglesiaForm,EntrenamientoForm,GrupoForm,PhotoForm
 from django.template.loader import render_to_string
 from datetime import datetime
+import calendar
+import time
 # Create your views here.
 class ActividadesView(ListView):
     model = Actividades
@@ -149,10 +152,16 @@ def Status_update(request, pk):
 def chart(request):
     data = []
     MesActual = datetime.now().month-1
-    activividades = Actividades.objects.filter(fecha__month=MesActual).exclude(status__status="Por Realizar").count()
-    suspendida = Actividades.objects.filter(status__status="Suspendida",fecha__month=MesActual).count()
-    realizada = Actividades.objects.filter(status__status="Realizada",fecha__month=MesActual).count()
-    no_realizada = Actividades.objects.filter(status__status="No Realizada",fecha__month=MesActual).count()
+    Hace_tre = datetime.now().month-3
+    ano = datetime.now().year
+    dias = calendar.monthrange(ano,MesActual)
+    hace_tres_meses = str(ano)+"-"+str(Hace_tre)+"-01"
+    mes_actual = str(ano)+"-"+str(MesActual)+"-"+str(dias[1])
+
+    activividades = Actividades.objects.filter(fecha__range=[hace_tres_meses,mes_actual]).exclude(status__status="Por Realizar").count()
+    suspendida = Actividades.objects.filter(status__status="Suspendida",fecha__range=[hace_tres_meses,mes_actual]).count()
+    realizada = Actividades.objects.filter(status__status="Realizada",fecha__range=[hace_tres_meses,mes_actual]).count()
+    no_realizada = Actividades.objects.filter(status__status="No Realizada",fecha__range=[hace_tres_meses,mes_actual]).count()
     if suspendida:
         por_sus = (100*suspendida)/activividades
         data.append({"value": round(por_sus, 2),"label":"Suspendidas"})
@@ -162,9 +171,224 @@ def chart(request):
     if no_realizada:
         por_no_rea = (100*no_realizada)/activividades
         data.append({"value": round(por_no_rea, 2),"label":"No Realizadas"})
-
+    print (activividades)
     return JsonResponse(data,safe=False)
 
 
 class EstadisticasView(TemplateView):
     template_name = 'actividades/estadisticas.html'
+
+
+#iglesia registro
+class IglesiaCreate(TemplateView):
+    model = Iglesia
+    template_name = 'iglesia/create.html'
+    def get(self,request,*args,**kwargs):
+        form = IglesiaForm()
+        context = {'form': form}
+        html_form = render_to_string(self.template_name,
+        context,
+        request=request)
+        return JsonResponse({'html_form': html_form})
+
+class IndexIglesiasView(TemplateView):
+    def get(self,request,**kwargs):
+        return render(request,'iglesia/listado.html')
+
+def IglesiasJson(request):
+    dicts = []
+    iglesia = Iglesia.objects.all()
+    for i in iglesia:
+        dicts.append({"model":"model.iglesia","pk":i.pk,"fields":{"nombre":i.nombre,"pastor":i.pastor,"direccion":i.direccion,"telefono":i.telefono,}})
+    #print ('dictionario: ',dicts)
+
+    #json = serializers.serialize('json', dicts)
+    return JsonResponse(dicts,safe=False)
+
+class IglesiaCreateView(TemplateView):
+    def post(self,request,*args,**kwargs):
+        data = dict()
+        
+        if request.method == 'POST':
+            form = IglesiaForm(request.POST)
+            if form.is_valid():
+                user, created = User.objects.get_or_create(email=request.POST['email'])
+                if created:
+                    user.first_name = request.POST['nombre']
+                    user.is_iglesia = True
+                    password = request.POST['nombre']+'1'
+                    user.set_password(password) # This line will hash the password
+
+                    user.save() #DO NOT FORGET THIS LINE
+                form.save()
+                data['form_is_valid'] = True
+            else:
+                data['form_is_valid'] = False
+        else:
+            form = IglesiaForm()
+
+        context = {'form': form}
+        data['html_form'] = render_to_string('iglesia/create.html',
+            context,
+            request=request)
+        return JsonResponse(data)
+    def  get(self,request):
+        return redirect('actividades:index_iglesia')
+
+#entrenamiento
+class EntrenamientoCreate(TemplateView):
+    model = Entrenamiento
+    template_name = 'entrenamiento/create.html'
+    def get(self,request,*args,**kwargs):
+        form = EntrenamientoForm()
+        context = {'form': form}
+        html_form = render_to_string(self.template_name,
+        context,
+        request=request)
+        return JsonResponse({'html_form': html_form})
+
+class IndexEntrenamientoView(TemplateView):
+    def get(self,request,**kwargs):
+        return render(request,'entrenamiento/listado.html')
+
+def EntrenamientoJson(request):
+    dicts = []
+    entrenamiento = Entrenamiento.objects.all()
+    for i in entrenamiento:
+        dicts.append({"model":"model.entrenamiento","pk":i.pk,"fields":{"iglesia":i.iglesia.nombre,"pastor":i.iglesia.pastor}})
+    #print ('dictionario: ',dicts)
+
+    #json = serializers.serialize('json', dicts)
+    return JsonResponse(dicts,safe=False)
+
+class EntrenamientoCreateView(TemplateView):
+    def post(self,request,*args,**kwargs):
+        data = dict()
+        
+        if request.method == 'POST':
+            form = EntrenamientoForm(request.POST)
+            if form.is_valid():
+                form.save()
+                data['form_is_valid'] = True
+            else:
+                data['form_is_valid'] = False
+        else:
+            form = EntrenamientoForm()
+
+        context = {'form': form}
+        data['html_form'] = render_to_string('entrenamiento/create.html',
+            context,
+            request=request)
+        return JsonResponse(data)
+    def  get(self,request):
+        return redirect('actividades:index_iglesia')
+
+
+
+class IndexGrupoView(TemplateView):
+    def get(self,request,**kwargs):
+        return render(request,'grupo/listado.html')
+
+def GrupoJson(request):
+    dicts = []
+    grupo = Grupo.objects.all()
+    for i in grupo:
+        dicts.append({"model":"model.grupo","pk":i.pk,"fields":{"nombre":i.nombre,"descripcion":i.descripcion}})
+    #print ('dictionario: ',dicts)
+
+    #json = serializers.serialize('json', dicts)
+    return JsonResponse(dicts,safe=False)
+
+class GrupoCreate(TemplateView):
+    model = Grupo
+    template_name = 'grupo/create.html'
+    def get(self,request,*args,**kwargs):
+        form = GrupoForm()
+        context = {'form': form}
+        html_form = render_to_string(self.template_name,
+        context,
+        request=request)
+        return JsonResponse({'html_form': html_form})
+
+
+class GrupoCreateView(TemplateView):
+    def post(self,request,*args,**kwargs):
+        data = dict()
+        
+        if request.method == 'POST':
+            form = GrupoForm(request.POST)
+            if form.is_valid():
+                form.save()
+                data['form_is_valid'] = True
+
+            else:
+                data['form_is_valid'] = False
+                context = {'form': form}
+                data['html_form'] = render_to_string('grupo/create.html',
+                    context,
+                    request=request
+                )
+                return JsonResponse(data)
+        else:
+            form = GrupoForm()
+
+        context = {'form': form}
+        data['html_form'] = render_to_string('grupo/create.html',
+            context,
+            request=request)
+        return JsonResponse(data)
+    def  get(self,request):
+        return redirect('actividades:index_grupo')
+
+
+
+class IndexMaterialView(TemplateView):
+    def get(self,request,**kwargs):
+        return render(request,'material/listado.html')
+
+def MaterialJson(request):
+    dicts = []
+    iglesia = Iglesia.objects.get(nombre=request.user.first_name)
+    entrenamiento = Entrenamiento.objects.get(iglesia=iglesia)
+    for i in entrenamiento.material.all():
+        dicts.append({"model":"model.material","pk":i.pk,"fields":{"nombre":i.nombre,"url":i.url,'grupo':i.grupo.nombre}})
+    return JsonResponse(dicts,safe=False)
+
+
+class ProgressBarUploadView(TemplateView):
+    def get(self, request):
+        photos_list = Photo.objects.all().order_by('-id')[:6]
+        print (photos_list)
+        json = serializers.serialize('json', photos_list)
+        return HttpResponse(json, content_type='application/json')
+
+    def post(self, request):
+        print ("id: ",request.POST['id'])
+        ids = request.POST['id']
+        actividad = get_object_or_404(Actividades,pk=ids)
+        album = Album.objects.get_or_create(actividad=actividad)
+        token = request.POST['csrfmiddlewaretoken']
+        al = album[0].id
+        arr = {"csrfmiddlewaretoken":token,"album":al}
+        time.sleep(1)  # You don't need this line. This is just to delay the process so you can see the progress bar testing locally.
+        form = PhotoForm(arr, self.request.FILES)
+        if form.is_valid():
+            photo = form.save()
+            data = {'is_valid': True, 'name': photo.file.name, 'url': photo.file.url}
+        else:
+            data = {'is_valid': False}
+        return JsonResponse(data)
+
+
+class Album_get(TemplateView):
+    def get(self,request):
+        album = Album.objects.all()
+        albumes =[]
+        for i in album:
+            albumes.append({"album":{"id":i.id,"actividad":str(i.actividad.nombre)}})
+            #albumes["actividad"] = i.actividad.nombre
+
+            print (albumes)
+        #json = serializers.serialize('json', album)
+        return JsonResponse(albumes,safe=False)
+

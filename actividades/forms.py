@@ -25,3 +25,24 @@ class StatusForm(forms.ModelForm):
     class Meta:
         model =  Actividades
         fields = ('status',)
+
+class IglesiaForm(forms.ModelForm):
+    class Meta:
+        model = Iglesia
+        fields = ('nombre','pastor','direccion','email','telefono')
+
+class EntrenamientoForm(forms.ModelForm):
+    class Meta:
+        model = Entrenamiento
+        fields = ('iglesia','material')
+
+class GrupoForm(forms.ModelForm):
+    class Meta:
+        model = Grupo
+        fields = ('nombre','descripcion')
+
+
+class PhotoForm(forms.ModelForm):
+    class Meta:
+        model = Photo
+        fields = ('file','album' )

@@ -185,6 +185,11 @@ function mostrar_modal(){
 
 //modals personalizados
 function cerrar_modal(){
+    $('#cargar').css("display","none");
+    $('#gallery').css("display","none");
+    $("#gallery").html("");
+
+    $('#cerrar').css("display","none");
     $('.modal-full').css("display", "none");
     $('#modal2 .modal-content').html(loader);
 }
