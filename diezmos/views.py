@@ -10,6 +10,8 @@ from django.views.generic.base import TemplateView
 
 #Importo El model
 from .models import Ingreso,Egreso
+#Importo Modelo notificacion
+from core.models import Notificacion
 #Importo Form
 from .forms import IngresoForm,EgresoForm
 from django.template.loader import render_to_string
@@ -56,6 +58,8 @@ class IngresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
             form = IngresoForm(request.POST)
             if form.is_valid():
                 form.save()
+                noti = Notificacion(user=request.user,contenido="Se ha registrado un nuevo ingreso de: "+str(request.POST['monto']))
+                noti.save()
                 data['form_is_valid'] = True
             else:
                 data['form_is_valid'] = False

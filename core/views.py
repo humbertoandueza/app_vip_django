@@ -2,7 +2,10 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 #Importo Mixins Login
 from .mixins import LoginRequiredMixin,SuperUserMixinRequired
+from django.http import JsonResponse
+from django.core import serializers
 
+from .models import Notificacion
 class IndexPageView(TemplateView):
 	template_name = 'core/landing_page/index.html'
 
@@ -14,3 +17,21 @@ class IndexPagePanelView(LoginRequiredMixin,TemplateView):
 
 class ProhibidoView(TemplateView):
 	template_name = 'registration/prohibido.html'
+
+class Notification(TemplateView):
+	def get(self,request):
+		noti = Notificacion.objects.filter(estatus='No leida').order_by('-id')[:5]
+		noti1 = Notificacion.objects.filter(estatus='No leida')
+
+		notifications = []
+		notifications.append({'cantidad':noti1.count()})
+		if(noti):
+			for i in noti:
+				notifications.append({'notificacion':{'id':i.id,'contenido':i.contenido,'estatus':i.estatus,'fecha':i.date}})
+			print('Hay notis pendientes:',noti.count())
+		else:
+			print('No tienes noti')
+		#json = serializers.serialize('json', notifications)
+		return JsonResponse(notifications,safe=False)
+
+

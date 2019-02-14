@@ -173,8 +173,9 @@ var url_json = "{% url 'actividades:actividades_json' %}";
 
                     stop: function (e) {
                       //$("#modal-progress").modal("hide");
-                      $("#load").val("");
-                      $("#load").hide("Carga Completa");
+                      $("#load").html("");
+                      //$("#load").html("<center><h4 style='color:green;'>Carga Completa</h4></center>");
+                      Materialize.toast('Carga Completa', 3000, 'rounded')
 
                     },
 
