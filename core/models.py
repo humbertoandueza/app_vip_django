@@ -72,3 +72,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         Returns the short name for the user.
         '''
         return self.first_name
+
+
+class Notificacion(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    contenido = models.CharField(max_length=150,verbose_name="Contenido de la notificacion")
+    date = models.DateField(auto_now_add=True)
+    estatus = models.CharField(max_length=20,default="No leida")
+
+    def __str__(self):
+        return self.user.first_name

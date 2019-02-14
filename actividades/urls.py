@@ -29,9 +29,15 @@ actividades_urlpatterns = ([
     path('crear_entrenamiento',EntrenamientoCreate.as_view(),name="crear_entrenamiento"),
     path('crear_grupo',GrupoCreate.as_view(),name="crear_grupo"),
 
-
+    #Galerria
     path('progress-bar-upload/',ProgressBarUploadView.as_view(), name='progress_bar_upload'),
-    path('albumes/',Album_get.as_view(),name="albumes"),
+    path('album/',Album_get.as_view(),name="album"),
+    path('albumes/',Album_tem.as_view(),name="albumes"),
+    path('photo/<int:pk>/',Photo_get.as_view(),name="photo"),
+    path('photos/<int:pk>/',Photos_tem.as_view(),name="photos"),
+
+
+
 
     path('post',ActividadesCreateView1.as_view(),name="post_actividad"),
     path('actualizar/<int:pk>/', Status_update,name="actualizar_status"),

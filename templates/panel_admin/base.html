@@ -69,36 +69,25 @@
                       <li><h1 class="logo-wrapper"><a href="{% url 'core:panel' %}" class="brand-logo darken-1"><img src="{% static 'assets/img/logo.png'%}" alt="materialize logo"></a> <span class="logo-text">Vida Plena</span></h1></li>
 
                     </ul>
-                    <ul class="right hide-on-med-and-down">
+                    <ul class="right">
                         <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light notification-button" data-activates="notifications-dropdown"><i class="mdi-social-notifications"></i></a></li>
                     </ul>
 
                     <!-- notifications-dropdown -->
                     <ul id="notifications-dropdown" class="dropdown-content">
                       <li>
-                        <h5>NOTIFICATIONS <span class="new badge">5</span></h5>
+                        <center>
+                            </h5>
+                            NOTIFICACIONES
+                            <h5>
+                        </center>
+                        <span  class="notis blue" style="padding: 5px; color: white;font-weight: bold; width: 100%;"></span>   
+                        <br>
+                        <a href="#" class="right" style="color: blue;margin-left: 52px;">Ver todas</a>
                       </li>
                       <li class="divider"></li>
-                      <li>
-                        <a href="#!"><i class="mdi-action-add-shopping-cart"></i> A new order has been placed!</a>
-                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">2 hours ago</time>
-                      </li>
-                      <li>
-                        <a href="#!"><i class="mdi-action-stars"></i> Completed the task</a>
-                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">3 days ago</time>
-                      </li>
-                      <li>
-                        <a href="#!"><i class="mdi-action-settings"></i> Settings updated</a>
-                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">4 days ago</time>
-                      </li>
-                      <li>
-                        <a href="#!"><i class="mdi-editor-insert-invitation"></i> Director meeting started</a>
-                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">6 days ago</time>
-                      </li>
-                      <li>
-                        <a href="#!"><i class="mdi-action-trending-up"></i> Generate monthly report</a>
-                        <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">1 week ago</time>
-                      </li>
+                      
+                      
                     </ul>
                     <div class="right">
                     
@@ -308,6 +297,44 @@
 
     <!-- jQuery Library -->
     <script type="text/javascript" src="{% static 'js/plugins/jquery-1.11.2.min.js'%}"></script>
+            <script type="text/javascript">
+          $(function () {
+            $.ajax({
+              url: "{% url 'core:notification' %}",
+              type: "GET",
+              dataType: 'json',
+              success: function (data) {
+                if(data.length > 0){
+                  data.forEach(function(e){
+                    if (e.cantidad != 0) {
+                        if(!e.cantidad){
+                            console.log('noti:',e);
+                            $('#notifications-dropdown').append(`
+                            <li>
+                                <a href="#!">${e.notificacion.contenido}</a>
+                                <time class="media-meta">${e.notificacion.fecha}</time>
+                            </li>
+                            `);
+                        }
+                        else{
+                            console.log('cantidad:',e);
+                            $('.notis').append(e.cantidad+" No leidas");
+                        }
+                    }else{
+                        $('.notis').removeClass('blue');
+                        $('.notis').append("0 No leidas");
+                        $('.notis').addClass('red');
+                    }
+                  });
+                  
+                }else{
+                    console.log('no se obtuvieron notification');
+                }
+              }
+              });
+          });
+
+        </script>
     <!--materialize js-->
     <script type="text/javascript" src="{% static 'js/materialize.js'%}"></script>
     <!--scrollbar-->

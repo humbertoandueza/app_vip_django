@@ -385,10 +385,31 @@ class Album_get(TemplateView):
         album = Album.objects.all()
         albumes =[]
         for i in album:
-            albumes.append({"album":{"id":i.id,"actividad":str(i.actividad.nombre)}})
+            photo = Photo.objects.filter(album=i.id).order_by('-id')[:1]
+            albumes.append({"album":{"id":i.id,"nombre":str(i.actividad.nombre),"ult_imagen":str(photo[0])}})
             #albumes["actividad"] = i.actividad.nombre
 
-            print (albumes)
         #json = serializers.serialize('json', album)
         return JsonResponse(albumes,safe=False)
 
+class Album_tem(TemplateView):
+    def get(self,request,**kwargs):
+        return render(request,'core/landing_page/albumes.html')
+
+class Photo_get(TemplateView):
+    def get(self,request,pk):
+        album = Album.objects.get(id=pk)
+        photos =[]
+        photo = Photo.objects.filter(album=album)
+        for i in photo:
+            print (i)
+            photos.append({"imagen":str(i.file)})
+            #photos["actividad"] = i.actividad.nombre
+
+        #json = serializers.serialize('json', album)
+        return JsonResponse(photos,safe=False)
+
+class Photos_tem(TemplateView):
+    def get(self,request,pk,**kwargs):
+        album = Album.objects.get(id=pk)
+        return render(request,'core/landing_page/photos.html',{'id':pk,'actividad':album.actividad.nombre})
