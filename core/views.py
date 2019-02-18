@@ -18,7 +18,7 @@ class IndexPagePanelView(LoginRequiredMixin,TemplateView):
 class ProhibidoView(TemplateView):
 	template_name = 'registration/prohibido.html'
 
-class Notification(TemplateView):
+class Notification(LoginRequiredMixin,TemplateView):
 	def get(self,request):
 		noti = Notificacion.objects.filter(estatus='No leida').order_by('-id')[:5]
 		noti1 = Notificacion.objects.filter(estatus='No leida')
@@ -34,4 +34,14 @@ class Notification(TemplateView):
 		#json = serializers.serialize('json', notifications)
 		return JsonResponse(notifications,safe=False)
 
+	def post(self,request):
+		noti = Notificacion.objects.filter(id=request.POST['id'])
+		noti.update(estatus="Leida")
 
+		return JsonResponse({"success":"Notificación actualizada"})
+
+
+def notificacions(user,contenido,url):
+	noti = Notificacion(user=user,contenido=contenido,url=url)
+	noti.save()
+	return True

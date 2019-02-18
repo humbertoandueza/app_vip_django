@@ -14,7 +14,8 @@ from .models import Persona
 from .forms import PersonaForm
 #Importo Mixins Login
 from core.mixins import LoginRequiredMixin,SuperUserMixinRequired
-
+#importo view notification
+from core.views import notificacions
 
 # Create your views here.
 class PersonasView(LoginRequiredMixin,TemplateView):
@@ -55,6 +56,9 @@ class PersonasCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView)
                         data['form_is_valid'] = False
                     else:
                         form.save()
+                        persona_saved = Persona.objects.latest('id')
+                        print ("id:",persona_saved.pk)
+                        notificacions(user=request.user,contenido="Persona registrada: <strong>"+str(request.POST['nombre'].upper())+"</strong>",url=request.POST['url']+"?id="+str(persona_saved.pk))
                         data['form_is_valid'] = True
                 else:
                     data['form_is_valid'] = False

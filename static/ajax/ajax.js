@@ -37,10 +37,11 @@ $("#modal1").on("submit", ".js-book-create-form", function (e) {
             }
         } 
     }
-
+    formulario = form.serialize()+'&'+$.param({ 'url': "http://google.co.ve" })
+    console.log(formulario);
     $.ajax({
     url: form.attr("action"),
-    data: form.serialize(),
+    data: formulario,
     type: form.attr("method"),
     dataType: 'json',
     success: function (data) {

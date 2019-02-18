@@ -11,11 +11,12 @@ from django.views.generic.base import TemplateView
 #Importo El model
 from .models import Ingreso,Egreso
 #Importo Modelo notificacion
-from core.models import Notificacion
+from core.views import notificacions
 #Importo Form
 from .forms import IngresoForm,EgresoForm
 from django.template.loader import render_to_string
 # Create your views here.
+
 class IndexPageView(LoginRequiredMixin,TemplateView):
     def get(self,request,**kwargs):
         return render(request,'diezmos/ingreso/listado.html')
@@ -58,8 +59,8 @@ class IngresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
             form = IngresoForm(request.POST)
             if form.is_valid():
                 form.save()
-                noti = Notificacion(user=request.user,contenido="Se ha registrado un nuevo ingreso de: "+str(request.POST['monto']))
-                noti.save()
+                notificacions(user=request.user,contenido=request.user.first_name+" registro un ingreso de: <strong>"+str(request.POST['monto'])+" Bs.</strong>")
+                
                 data['form_is_valid'] = True
             else:
                 data['form_is_valid'] = False
@@ -146,6 +147,7 @@ def ingreso_update(request, pk):
                 form.save()
                 data['form_is_valid'] = True
 
+
             else:
                 data['form_is_valid'] = False
         context = {'form': form}
@@ -202,6 +204,9 @@ class EgresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
         if request.method == 'POST':
             form = EgresoForm(request.POST)
             capital = int(capital_obtener())
+            print('recibo',request.POST['monto'])
+            print('recibo c',Capital(request))
+
             monto_egreso = int(request.POST['monto'])
             resta = (capital-monto_egreso)
             print ("\n \n \n \n resta",resta)
@@ -215,6 +220,7 @@ class EgresoCreateView(LoginRequiredMixin,SuperUserMixinRequired,TemplateView):
                     usuario = form.save(commit=False)
                     usuario.usuario = request.user
                     form.save()
+                    notificacions(user=request.user,contenido=request.user.first_name+" realizó un retiro de: <strong>"+str(request.POST['monto'])+" Bs.</strong>")
                     data['form_is_valid'] = True
 
                 else:

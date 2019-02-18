@@ -13,6 +13,10 @@ from django.template.loader import render_to_string
 from datetime import datetime
 import calendar
 import time
+from django.core.mail import send_mail
+from core.mixins import LoginRequiredMixin,SuperUserMixinRequired
+from core.views import notificacions
+
 # Create your views here.
 class ActividadesView(ListView):
     model = Actividades
@@ -74,6 +78,8 @@ class ActividadesCreateView1(TemplateView):
                 status_p = form.save(commit=False)
                 status_p.status = estatus_id
                 actividad = form.save()
+                notificacions(user=request.user,contenido="Se ha planificado una nueva actividad titulada: <strong>"+str(request.POST['nombre'])+"</strong>, fecha: <strong>"+str(request.POST['fecha_submit'])+"</strong>",url="")
+
                 data['id'] = actividad.pk
             else:
                 data['form_is_valid'] = False
@@ -122,6 +128,8 @@ def Status_update(request, pk):
             data['start'] = str(fecha)+"T"+str(hora)
             data['estatus'] = estatus_id.status
             data['form_is_valid'] = True
+            notificacions(user=request.user,contenido="Actividad titulada: <strong>"+estatus.nombre+"</strong> actualizada a una nueva fecha: <p style='color:green;display: contents;'><strong>"+str(estatus.fecha)+"</strong></p>",url="")
+
 
         else:
             if form.is_valid():
@@ -139,6 +147,7 @@ def Status_update(request, pk):
 
                 data['form_is_valid'] = True
                 data['color'] = color
+                notificacions(user=request.user,contenido="Actividad titulada: <strong>"+estatus.nombre+"</strong> actualizada a: <p style='color:"+color+";display: contents;'><strong>"+estatus.status.status+"</strong></p>",url="")
                 data['estatus'] = estatus.status.status
     else:
         form = StatusForm(instance=estatus)
@@ -205,7 +214,7 @@ def IglesiasJson(request):
     #json = serializers.serialize('json', dicts)
     return JsonResponse(dicts,safe=False)
 
-class IglesiaCreateView(TemplateView):
+class IglesiaCreateView(TemplateView,SuperUserMixinRequired):
     def post(self,request,*args,**kwargs):
         data = dict()
         
@@ -216,12 +225,24 @@ class IglesiaCreateView(TemplateView):
                 if created:
                     user.first_name = request.POST['nombre']
                     user.is_iglesia = True
-                    password = request.POST['nombre']+'1'
+                    nombre = request.POST['nombre'].lower().replace(" ", "")
+                    print("nombre: ",nombre)
+                    password = nombre+'1'
+                    content = 'Hola te damos la bienvenida. su usuario de acceso es: '+request.POST['email']+" y su clave es: "+password
+                    send_mail(
+                        'Registro APPVIP',
+                        content,
+                        'humbertoanduezaa@gmail.com',
+                        [request.POST['email']],
+                        fail_silently=False,
+                    )
                     user.set_password(password) # This line will hash the password
 
                     user.save() #DO NOT FORGET THIS LINE
-                form.save()
-                data['form_is_valid'] = True
+                    form.save()
+                    data['form_is_valid'] = True
+                else:
+                    data['form_is_valid'] = False
             else:
                 data['form_is_valid'] = False
         else:

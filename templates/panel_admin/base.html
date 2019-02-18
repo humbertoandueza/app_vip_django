@@ -74,7 +74,7 @@
                     </ul>
 
                     <!-- notifications-dropdown -->
-                    <ul id="notifications-dropdown" class="dropdown-content">
+                    <ul id="notifications-dropdown" class="dropdown-content" style="min-width:25vw;">
                       <li>
                         <center>
                             </h5>
@@ -83,7 +83,7 @@
                         </center>
                         <span  class="notis blue" style="padding: 5px; color: white;font-weight: bold; width: 100%;"></span>   
                         <br>
-                        <a href="#" class="right" style="color: blue;margin-left: 52px;">Ver todas</a>
+                            <a href="#" class="right" style="color: blue;margin-left: 52px;">Ver todas</a>
                       </li>
                       <li class="divider"></li>
                       
@@ -124,13 +124,7 @@
                         <ul id="profile-dropdown" class="dropdown-content">
                             <li><a href="#"><i class="mdi-action-face-unlock"></i> Perfil</a>
                             </li>
-                            <li><a href="#"><i class="mdi-action-settings"></i> Settings</a>
-                            </li>
-                            <li><a href="#"><i class="mdi-communication-live-help"></i> Help</a>
-                            </li>
                             <li class="divider"></li>
-                            <li><a href="#"><i class="mdi-action-lock-outline"></i> Lock</a>
-                            </li>
                             <li><a href="{% url 'logout' %}"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
                             </li>
                         </ul>
@@ -298,42 +292,76 @@
     <!-- jQuery Library -->
     <script type="text/javascript" src="{% static 'js/plugins/jquery-1.11.2.min.js'%}"></script>
             <script type="text/javascript">
-          $(function () {
-            $.ajax({
-              url: "{% url 'core:notification' %}",
-              type: "GET",
-              dataType: 'json',
-              success: function (data) {
-                if(data.length > 0){
-                  data.forEach(function(e){
-                    if (e.cantidad != 0) {
-                        if(!e.cantidad){
-                            console.log('noti:',e);
-                            $('#notifications-dropdown').append(`
-                            <li>
-                                <a href="#!">${e.notificacion.contenido}</a>
-                                <time class="media-meta">${e.notificacion.fecha}</time>
-                            </li>
-                            `);
+            var cantidad = 0;
+                function noti(){
+                  $(function () {
+                    $.ajax({
+                      url: "{% url 'core:notification' %}",
+                      type: "GET",
+                      dataType: 'json',
+                      success: function (data) {
+                        if(data.length > 0){
+                          data.forEach(function(e){
+                            if (e.cantidad != 0) {
+                                if(!e.cantidad){
+                                    console.log('noti:',e);
+                                    $('#notifications-dropdown').append(`
+                                    <li>
+                                        <a style="white-space: initial; font-size:13px;" href="#" onclick="act(${e.notificacion.id})">${e.notificacion.contenido}</a>
+                                        <time class="media-meta" id="lei${e.notificacion.id}">${e.notificacion.fecha}  </time>
+                                    </li>
+                                    `);
+                                }
+                                else{
+                                    console.log('cantidad:',e);
+                                    $('.notis').append(e.cantidad+" No leidas");
+                                    cantidad = e.cantidad;
+                                    console.log("cantidad",cantidad);
+                                }
+                            }else{
+                                $('.notis').removeClass('blue');
+                                $('.notis').append("0 No leidas");
+                                $('.notis').addClass('red');
+                            }
+                          });
+                          
+                        }else{
+                            console.log('no se obtuvieron notification');
                         }
-                        else{
-                            console.log('cantidad:',e);
-                            $('.notis').append(e.cantidad+" No leidas");
-                        }
-                    }else{
+                      }
+                      });
+                  });
+                    
+                }
+                noti();
+          function act(id){
+            let not = "#lei"+id;
+            le = $(not).hasClass('le');
+            if(!le){
+                console.log("cantidad nueva",cantidad);
+                $.ajax({
+                  url: "{% url 'core:notification' %}",
+                  type: "POST",
+                  data: {"id":id,"csrfmiddlewaretoken":"{{ csrf_token }}"},
+                  dataType: 'json',
+                  success: function (data) {
+                    Materialize.toast(data.success, 3000, 'rounded');
+                    if(cantidad == 1){
                         $('.notis').removeClass('blue');
-                        $('.notis').append("0 No leidas");
                         $('.notis').addClass('red');
                     }
+                    cantidad =  cantidad-1;
+                    $('.notis').html(cantidad+" No Leidas");
+                    $(not).addClass('le');
+                    $(not).append("<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;leida</strong>");
+                  }
                   });
-                  
-                }else{
-                    console.log('no se obtuvieron notification');
-                }
-              }
-              });
-          });
 
+            }else{
+                console.log('Notificacion leida');
+            }
+
+          }
         </script>
     <!--materialize js-->
     <script type="text/javascript" src="{% static 'js/materialize.js'%}"></script>
